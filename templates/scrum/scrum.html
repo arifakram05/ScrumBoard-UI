@@ -1,0 +1,144 @@
+<div layout="column" ng-cloak>
+    <div ng-controller="scrumCtrl as ctrl">
+
+        <md-toolbar class="md-primary">
+            <div class="md-toolbar-tools">
+                <h2 class="md-flex">Scrum Board</h2>
+            </div>
+        </md-toolbar>
+        <md-content layout-padding>
+            <div layout="row">
+                <div layout="column" layout-align="center" ng-style="{'float':'left', 'width':'35%'}">
+                    <form name="voew_sd_form">
+                        <md-calendar name="view_sd_form_rawSelectedDate" ng-model="view_sd_rawSelectedDate" required></md-calendar>
+                    </form>
+
+                    <form name="view_sd_refinedSearchForm">
+                        <div layout="column" layout-align="center" ng-if="view_sd_searchByProject">
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <input name="view_sd_projectName_label" ng-model="view_sd_searchProject" placeholder="Project Name">
+                            </md-input-container>
+
+                            <md-input-container flex="">
+                                <label>Projects</label>
+                                <md-select name="view_sd_projectName_combo" ng-model="ctrl.view_sd_selectedProjectName" required>
+                                    <md-option ng-value="project" ng-repeat="project in projects | filter: view_sd_searchProject">{{ project.name }}</md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row" layout-align="center">
+                            <md-switch ng-model="view_sd_searchByProject" flex="100">
+                                <p>Refine</p>
+                            </md-switch>
+                        </div>
+
+                        <div layout="row" ng-if="view_sd_searchByProject" layout-align="center">
+                            <md-button ng-click="view_sd_refineProjectSearch(ctrl.view_sd_selectedProjectName.name, view_sd_rawSelectedDate)" class="md-raised md-primary" ng-style="{'height':'20px'}">Submit</md-button>
+                        </div>
+                    </form>
+                </div>
+
+                <md-input-container flex="5"></md-input-container>
+
+                <!--Project details-->
+                <div ng-show="view_sd_isDataFetched" ng-style="{'width':'100%'}">
+
+                    <div layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
+                        <md-input-container flex="50" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
+                            <input ng-model="view_sd_search" id="view_sd_search" placeholder="Search">
+                        </md-input-container>
+                    </div>
+
+                    <table ng-style="{'text-align':'left', 'margin':'0 auto', 'width':'100%'}" flex dir-paginate="project in scrumProjects | filter:view_sd_search | itemsPerPage: 1">
+                        <tr>
+                            <td>
+                                <h4 class="text-center">{{view_sd_selectedDate}} - {{project.project}}</h4>
+                                <hr/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table class="table borderless">
+                                    <thead>
+                                        <tr>
+                                            <th ng-style="{'text-align':'left'}">Scrum Name</th>
+                                            <th ng-style="{'text-align':'left'}">Name/ID</th>
+                                            <th ng-style="{'text-align':'left'}">Yesterday's accomplishments</th>
+                                            <th ng-style="{'text-align':'left'}">Plan for today</th>
+                                            <th ng-style="{'text-align':'left'}">Roadblocks</th>
+                                            <th ng-style="{'text-align':'left'}">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="detail in project.scrumDetails | filter : view_sd_search">
+                                        <tr>
+                                            <td>
+                                                <span ng-bind="detail.scrumName"></span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="detail.associateName"></span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="detail.yesterday"></span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="detail.today"></span>
+                                            </td>
+                                            <td>
+                                                <span ng-bind="detail.roadblocks"></span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-primary btn" ng-click="edit_scrum_details(detail)">
+                                                        <i class="glyphicon glyphicon-pencil"></i>
+                                                    </button>
+
+                                                    <button type="button" class="btn btn-default btn" ng-click="show_scrum_details(labAsst)">
+                                                        <i class="fa fa-binoculars"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div>
+                        <div class="text-center">
+                            <dir-pagination-controls max-size="5" boundary-links="true" direction-links="true" template-url="js/dirPagination.tpl.html"></dir-pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </md-content>
+
+        <!--Modal Begin-->
+        <div class="modal fade" id="scrum_page_modal" tabindex="-1" role="dialog" aria-labelledby="scrum_page_modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+                        <md-toolbar class="md-primary">
+                            <div class="md-toolbar-tools">
+                                <h2 class="md-flex">Scrum note details</h2>
+                            </div>
+                        </md-toolbar>
+
+                        <md-content class="md-no-momentum">
+                            <div layout="column" flex="">
+                                Modal
+                            </div>
+
+                            <div layout="row" layout-align="center" flex>
+                                <md-button class="md-raised md-default" data-dismiss="modal">close</md-button>
+                            </div>
+                        </md-content>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Modal End-->
+    </div>
+</div>
