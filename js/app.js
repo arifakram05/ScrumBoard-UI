@@ -16,10 +16,6 @@ var scrumApp = angular.module(
             templateUrl: "templates/home.html",
             controller: "homeCtrl"
         })
-        .state('commonpage', {
-            //url: '/commonpage',
-            templateUrl: 'templates/commonpage.html'
-        })
         .state('secretpage', {
             //url: '/secretpage',
             templateUrl: "templates/secretpage.html",
