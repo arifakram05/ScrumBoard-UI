@@ -1,7 +1,8 @@
 var scrumApp = angular.module(
     'scrumApp', [
         'ui.router', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination',
-        'scrumApp.scrum'
+        'scrumApp.scrum',
+        'scrumApp.project'
 ])
 
 .config(function ($stateProvider, $urlRouterProvider) {
