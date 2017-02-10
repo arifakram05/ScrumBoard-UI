@@ -1,8 +1,9 @@
 var scrumApp = angular.module(
     'scrumApp', [
-        'ui.router', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination',
+        'ui.router', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination',
         'scrumApp.scrum',
-        'scrumApp.project'
+        'scrumApp.project',
+        'scrumApp.associate'
 ])
 
 .config(function ($stateProvider, $urlRouterProvider) {
@@ -14,10 +15,6 @@ var scrumApp = angular.module(
             url: '/home', //having this will show up the url in the address bar
             templateUrl: "templates/home.html",
             controller: "homeCtrl"
-        })
-        .state('addProject', {
-            //url: '/addProject',
-            template: 'Coming Soon'
         })
         .state('commonpage', {
             //url: '/commonpage',
@@ -39,6 +36,27 @@ var scrumApp = angular.module(
         })
 })
 
+.controller('mainCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+
+    //Project Modal
+    $scope.showProjectModal = function () {
+        console.log('opening project modal');
+        var modalInstance = $uibModal.open({
+            templateUrl: "templates/project/project.html",
+            controller: "projectCtrl"
+        });
+    }
+
+    //Associate Modal
+    $scope.showAssociateModal = function () {
+        console.log('opening associate modal');
+        var modalInstance = $uibModal.open({
+            templateUrl: "templates/associate/associate.html",
+            controller: "associateCtrl"
+        });
+    }
+
+}])
 
 .factory('accessFac', function () {
     var obj = {}

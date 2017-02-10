@@ -2,39 +2,29 @@
 
 angular.module('scrumApp.project', ['ui.router'])
 
-.config(function ($stateProvider, $urlRouterProvider) {
-    $stateProvider
-        .state('project', {
-            //url: "/project",
-            templateUrl: "templates/project/project.html",
-            controller: "projectCtrl"
-        })
-})
-
 /*.factory('projectService', ['$http', '$q', function ($http, $q) {
 
 
 
     }])*/
 
-.controller('projectCtrl', ['$scope', '$filter', '$mdDialog', '$q', function ($scope, $filter, $mdDialog, $q) {
+.controller('projectCtrl', ['$scope', '$filter', '$q', '$uibModalInstance', function ($scope, $filter, $q, $uibModalInstance) {
 
-    console.log('inside scrum controller');
+    console.log('inside project controller');
 
-    showProjectModal();
+    //save project name
+    $scope.saveProject = function (projectName) {
+        console.log('Name of the new project is ' + projectName);
 
-    function showProjectModal() {
-        $('#project_page_modal').modal('show');
+        //URI POST call to save the project
+
+
+        //when success, close the modal and show the success message as floating div
+        $scope.closeProjectModal();
     }
 
-    //alerts to user
-    function notifyUser(message) {
-        $mdDialog.show(
-            $mdDialog.alert()
-            .clickOutsideToClose(true)
-            .textContent(message)
-            .ok('Got it!')
-        );
-    }
+    $scope.closeProjectModal = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
 
-    }]);
+}]);

@@ -1,0 +1,27 @@
+<div class="modal-body">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h2 class="md-flex">Add Associate to a Project</h2>
+        </div>
+    </md-toolbar>
+
+    <md-content class="md-no-momentum">
+        <div layout="column" flex="">
+            <div id="addAssociateMsg">
+            </div>
+
+            <br/>
+
+            <div layout="row" layout-align="center">
+                <md-input-container flex="70" md-no-float class="md-block">
+                    <input name="associateName" ng-model="associateName" placeholder="Associate Name" required>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row" layout-align="center" flex>
+            <md-button class="md-raised md-default" ng-click="closeAssociateModal()">close</md-button>
+            <md-button class="md-raised md-primary" ng-click="saveAssociate(associateName)">Save</md-button>
+        </div>
+    </md-content>
+</div>
