@@ -3,36 +3,36 @@ var scrumApp = angular.module(
         'ui.router', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination',
         'scrumApp.scrum',
         'scrumApp.project',
-        'scrumApp.associate'
+        'scrumApp.associate',
+        'scrumApp.login',
+        'scrumApp.logout',
+        'scrumApp.shared'
 ])
 
 .config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/scrum');
+    $urlRouterProvider.otherwise('/login');
 
-    $stateProvider
-        .state('home', {
-            url: '/home', //having this will show up the url in the address bar
-            templateUrl: "templates/home.html",
-            controller: "homeCtrl"
-        })
-        .state('secretpage', {
-            //url: '/secretpage',
-            templateUrl: "templates/secretpage.html",
-            resolve: {
-                "checkthis": function (accessFac) { //function to be resolved, accessFac Injected
-                    if (accessFac.checkPermission()) { //check if the user has permission -- This happens before the page loads
 
-                    } else {
-                        alert("You don't have access here");
-                        $state.go('home'); //redirect user to home if it does not have permission.
-                    }
-                }
-            }
-        })
 })
 
-.controller('mainCtrl', ['$scope', '$uibModal', function ($scope, $uibModal) {
+.controller('mainCtrl', ['$scope', '$uibModal', 'SharedService', function ($scope, $uibModal, SharedService) {
+
+    //monitor date selected and fetch shift details for a custom date
+    $scope.$watch(function () {
+        console.log('watching associate details : ', SharedService.associateDetails);
+
+        $scope.userDetails = SharedService.associateDetails;
+
+        $scope.isUserLoggedIn = SharedService.isUserAuthenticated();
+
+        if ($scope.userDetails !== undefined) {
+            console.log('FROM MAINCTRL -  user details :: ', $scope.userDetails);
+            $scope.userRole = $scope.userDetails.role;
+        }
+
+        return SharedService.associateDetails;
+    }, true);
 
     //Project Modal
     $scope.showProjectModal = function () {
@@ -52,31 +52,4 @@ var scrumApp = angular.module(
         });
     }
 
-}])
-
-.factory('accessFac', function () {
-    var obj = {}
-    this.access = false;
-
-    obj.getPermission = function () { //set the permission to true
-        this.access = true;
-    }
-
-    obj.checkPermission = function () {
-        return this.access; //returns the users permission level
-    }
-
-    return obj;
-})
-
-.controller('homeCtrl', function ($scope) {
-    $scope.sayHello = function (name) {
-        alert('Hello there! ' + name);
-    }
-})
-
-.controller('testCtrl', function ($scope, accessFac) {
-    $scope.getAccess = function () {
-        accessFac.getPermission(); //call the method in acccessFac to allow the user permission.
-    }
-});
+}]);

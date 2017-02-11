@@ -1,0 +1,27 @@
+<div ng-controller="loginCtrl">
+    <div class="col-md-8 col-md-offset-2">
+        <md-content class="md-padding">
+            <md-toolbar class="md-primary">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-flex">Login</h2>
+                </div>
+            </md-toolbar>
+
+            <form name="loginForm" role="form" layout="column" layout-padding ng-cloak>
+                <md-content class="md-no-momentum">
+                    <p ng-if="showLoginMessage === true" class="UserMessages">
+                        {{loginMessage}}
+                    </p>
+
+                    <md-input-container md-no-float class="md-block">
+                        <input name="associateId" ng-model="associateId" type="text" placeholder="Id Number" required>
+                    </md-input-container>
+                </md-content>
+
+                <div layout="row" layout-align="center" flex>
+                    <md-button class="md-raised md-default" ng-disabled="!associateId" ng-click="login(associateId)">Login</md-button>
+                </div>
+            </form>
+        </md-content>
+    </div>
+</div>

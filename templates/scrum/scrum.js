@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('scrumApp.scrum', ['ui.router'])
+angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -68,9 +68,16 @@ angular.module('scrumApp.scrum', ['ui.router'])
 
 }])
 
-.controller('scrumCtrl', ['$scope', 'scrumService', '$filter', '$mdDialog', '$q', function ($scope, scrumService, $filter, $mdDialog, $q) {
+.controller('scrumCtrl', ['$scope', 'scrumService', '$filter', '$mdDialog', '$q', 'SharedService', '$state', function ($scope, scrumService, $filter, $mdDialog, $q, SharedService, $state) {
 
-    console.log('inside scrum controller');
+    console.log('inside scrum controller : Associate details - ', SharedService.getAssociateDetails());
+
+    //Check if user is logged in, only then continue
+    if (!SharedService.isUserAuthenticated()) {
+        console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
+        SharedService.showLoginPage();
+        return;
+    }
 
     this.view_sd_selectedProjectName = '';
     $scope.projects = getProjects();

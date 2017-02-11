@@ -9,7 +9,7 @@
         <md-content layout-padding>
             <div layout="row">
                 <div layout="column" layout-align="center" ng-style="{'float':'left', 'width':'35%'}">
-                    <form name="voew_sd_form">
+                    <form name="view_sd_form">
                         <md-calendar name="view_sd_form_rawSelectedDate" ng-model="view_sd_rawSelectedDate" required></md-calendar>
                     </form>
 
@@ -44,13 +44,14 @@
                 <!--Project details-->
                 <div ng-show="view_sd_isDataFetched" ng-style="{'width':'100%'}">
 
-                    <div layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
-                        <md-input-container flex="50" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
-                            <input ng-model="view_sd_search" id="view_sd_search" placeholder="Search">
-                        </md-input-container>
-                    </div>
-
                     <table ng-style="{'text-align':'left', 'margin':'0 auto', 'width':'100%'}" flex dir-paginate="project in scrumProjects | filter:view_sd_search | itemsPerPage: 1">
+
+                        <div layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
+                            <md-input-container flex="50" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
+                                <input ng-model="view_sd_search" id="view_sd_search" placeholder="Search">
+                            </md-input-container>
+                        </div>
+
                         <tr>
                             <td>
                                 <h4 class="text-center">{{view_sd_selectedDate}} - {{project.project}}</h4>
