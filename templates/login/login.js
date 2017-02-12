@@ -11,7 +11,7 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
 
 .factory('loginService', ['$http', '$q', function ($http, $q) {
 
-    var LOGIN_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/login/';
+    var LOGIN_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/login/';
 
     var factory = {
         loginAssociate: loginAssociate
@@ -23,8 +23,8 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
         console.log('control in factory method : ', associateId);
         var deferred = $q.defer();
 
-        //This code is only in place to mock Http calls
-        if (associateId === "046752") {
+        //This code is only in place to mock Http calls - DO NOT DELETE
+        /*if (associateId === "046752") {
             console.log('control inside testing method : ', associateId);
             var associateDetails = {
                 "authId": "shfulig{}}#@aelf734769q8rp3278",
@@ -41,12 +41,15 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
         } else {
             deferred.reject("Login call failure");
             return deferred.promise;
-        }
+        }*/
         //Remove this block before going live
 
         $http.post(LOGIN_ASSOCIATE_URI, associateId)
             .success(
                 function (data, status, headers, config) {
+                    if (data.code !== 200) {
+                        deferred.reject(data);
+                    }
                     console.log('Login Success ', data);
                     deferred.resolve(data);
                 })
@@ -64,9 +67,6 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
 
     console.log('inside login controller');
 
-    $scope.loginMessage = '';
-    $scope.showLoginMessage = false;
-
     //responsible for logging in the user
     $scope.login = function (associateId) {
         console.log('Logging in for .... ', associateId);
@@ -81,19 +81,21 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
                 //Make the data available to all controllers
                 setApplicationLevelData(result);
 
+                //Show success message to the user
+                SharedService.showSuccess('Login Successful');
+
                 //Navigate to scrum page
                 navigateToHome();
             })
             .catch(function (resError) {
                 console.log('LOGIN FAILURE :: ', resError);
-                showLoginMessage('We are sorry. Something went wrong!');
+                //show failure message to the user
+                if (resError.code === 403) {
+                    SharedService.showError(resError.message);
+                } else {
+                    SharedService.showError('Internal Server Error. System could not log you in.');
+                }
             });
-    }
-
-    //shows message to the user while on LOGIN page
-    function showLoginMessage(message) {
-        $scope.showLoginMessage = true;
-        $scope.loginMessage = message;
     }
 
     //navigates to the home page
@@ -105,8 +107,11 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
 
     //share associate details retured from login success call with all controllers
     function setApplicationLevelData(associateDetails) {
-        console.log('Associate details fetched from service call :: ',associateDetails);
-        SharedService.setAssociateDetails(associateDetails);
+        console.log('Associate details fetched from service call :: ', associateDetails.response[0]);
+        //set associate details
+        SharedService.setAssociateDetails(associateDetails.response[0]);
+        //set auth token
+        SharedService.setAuthToken(associateDetails.authToken);
     }
 
 }]);

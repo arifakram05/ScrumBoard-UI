@@ -1,22 +1,32 @@
 angular.module('scrumApp.shared', ['ui.router'])
 
-.service('SharedService', ['$state', function ($state) {
+.service('SharedService', ['$state', 'growl', function ($state, growl) {
 
     this.associateDetails = {};
+
+    this.authToken = '';
 
     var service = {
         setAssociateDetails: setAssociateDetails,
         getAssociateDetails: getAssociateDetails,
 
+        setAuthToken: setAuthToken,
+        getAuthToken: getAuthToken,
+
         getAssociateName: getAssociateName,
         getAssociateId: getAssociateId,
-        getAuthId: getAuthId,
         getUserRole: getUserRole,
 
         showLoginPage: showLoginPage,
         navigateToScurmBoard: navigateToScurmBoard,
         isUserAuthenticated: isUserAuthenticated,
+        isUserAdmin: isUserAdmin,
         verifyUserAndRedirect: verifyUserAndRedirect,
+
+        showSuccess: showSuccess,
+        showWarning: showWarning,
+        showError: showError,
+        showInfo: showInfo,
 
         logout: logout
     };
@@ -32,16 +42,21 @@ angular.module('scrumApp.shared', ['ui.router'])
         return this.associateDetails;
     }
 
+    function setAuthToken(authToken) {
+        this.authToken = authToken;
+        console.log('token set : ', this.authToken);
+    }
+
+    function getAuthToken() {
+        return this.authToken;
+    }
+
     function getAssociateName() {
-        return associateDetails.name;
+        return this.associateDetails.associateName;
     }
 
     function getAssociateId() {
-        return this.associateDetails.id;
-    }
-
-    function getAuthId() {
-        return this.associateDetails.authId;
+        return this.associateDetails.associateId;
     }
 
     function getUserRole() {
@@ -59,9 +74,16 @@ angular.module('scrumApp.shared', ['ui.router'])
     }
 
     function isUserAuthenticated() {
-        if (this.associateDetails !== undefined)
+        if (this.associateDetails !== undefined && this.authToken !== '')
             return true;
         else
+            return false;
+    }
+
+    function isUserAdmin() {
+        if (isUserAuthenticated() && getUserRole() === 'admin') {
+            return true;
+        } else
             return false;
     }
 
@@ -76,6 +98,23 @@ angular.module('scrumApp.shared', ['ui.router'])
     //logout user
     function logout() {
         this.associateDetails = undefined;
+    }
+
+    /*Messages to the user*/
+    function showSuccess(message) {
+        growl.success(message, {title: 'Success!'});
+    }
+
+    function showWarning(message) {
+        growl.warning(message, {title: 'Warning!'});
+    }
+
+    function showError(message) {
+        growl.error(message, {title: 'Error!'});
+    }
+
+    function showInfo(message) {
+        growl.info(message, {title: 'Info!'});
     }
 
 }]);

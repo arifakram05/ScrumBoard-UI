@@ -1,6 +1,6 @@
 var scrumApp = angular.module(
     'scrumApp', [
-        'ui.router', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination',
+        'ui.router', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination', 'angular-growl',
         'scrumApp.scrum',
         'scrumApp.project',
         'scrumApp.associate',
@@ -9,11 +9,12 @@ var scrumApp = angular.module(
         'scrumApp.shared'
 ])
 
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, growlProvider) {
 
     $urlRouterProvider.otherwise('/login');
-
-
+    growlProvider.globalTimeToLive(5000);
+    growlProvider.globalPosition('bottom-right');
+    growlProvider.globalDisableCountDown(true);
 })
 
 .controller('mainCtrl', ['$scope', '$uibModal', 'SharedService', function ($scope, $uibModal, SharedService) {

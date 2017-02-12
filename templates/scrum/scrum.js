@@ -79,6 +79,8 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         return;
     }
 
+    $scope.loggedInUserId = SharedService.getAssociateId();
+
     this.view_sd_selectedProjectName = '';
     $scope.projects = getProjects();
 

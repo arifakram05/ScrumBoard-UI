@@ -11,6 +11,9 @@
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen" />
         <!-- Angular Material style sheet -->
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+        <!--Angular growl 2-->
+        <link rel="stylesheet" media="screen" href="css/angular-growl.min.css">
+
         <link data-require="font-awesome@*" data-semver="4.3.0" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="css/app.css" rel="stylesheet" media="screen" />
@@ -32,7 +35,9 @@
         </nav>
 
         <div class="">
-            <div ui-view></div>
+            <div growl></div><!--User Notifications-->
+            <div ui-view>
+            </div>
         </div>
 
         <!--<script src="js/angular.js"></script>-->
@@ -47,6 +52,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-messages.min.js"></script>
         <!-- Angular Material Library -->
         <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+        <!--Angular Growl-->
+        <script src="js/angular-growl.min.js"></script>
 
         <!--Utilities    -->
         <script src="js/dirPagination.js"></script>

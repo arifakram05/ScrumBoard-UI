@@ -8,7 +8,8 @@
         </md-toolbar>
         <md-content layout-padding>
             <div layout="row">
-                <div layout="column" layout-align="center" ng-style="{'float':'left', 'width':'35%'}">
+                <div layout="column" layout-align="start" ng-style="{'float':'left', 'width':'35%'}">
+
                     <form name="view_sd_form">
                         <md-calendar name="view_sd_form_rawSelectedDate" ng-model="view_sd_rawSelectedDate" required></md-calendar>
                     </form>
@@ -60,7 +61,36 @@
                         </tr>
                         <tr>
                             <td>
-                                <table class="table borderless">
+
+                                <div class="panel panel-default" ng-repeat="detail in project.scrumDetails | filter : view_sd_search">
+                                    <div class="panel-heading" layout="row">
+                                        <h3 class="panel-title">{{detail.associateName}}</h3>
+
+                                        <!--div layout="row" layout-align="end" flex>
+                                            <button type="button" class="btn btn-danger btn" ng-if="loggedInUserId === detail.associateId" ng-click="edit_scrum_details(detail)">
+                                                <i class="glyphicon glyphicon-pencil"></i> Edit
+                                            </button>
+                                        </div>-->
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <md-input-container md-no-float class="md-block" flex>
+                                            <label>Yesterday's Accomplishments</label>
+                                            <textarea name="yesterday" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.yesterday" md-maxlength="150" rows="1" max-rows="2" md-select-on-focus></textarea>
+                                        </md-input-container>
+
+                                        <md-input-container md-no-float class="md-block" flex>
+                                            <label>Today's Target</label>
+                                            <textarea name="today" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.today" md-maxlength="150" rows="1" max-rows="2" md-select-on-focus></textarea>
+                                        </md-input-container>
+
+                                        <md-input-container md-no-float class="md-block" flex>
+                                            <label>Roadblocks</label>
+                                            <textarea name="roadblocks" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.roadblocks" md-maxlength="150" rows="1" max-rows="2" md-select-on-focus></textarea>
+                                        </md-input-container>
+                                    </div>
+                                </div>
+                                <!--<table class="table borderless">
                                     <thead>
                                         <tr>
                                             <th ng-style="{'text-align':'left'}">Scrum Name</th>
@@ -101,7 +131,7 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                </table>
+                                </table>-->
                             </td>
                         </tr>
                     </table>
