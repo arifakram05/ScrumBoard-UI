@@ -21,14 +21,14 @@ var scrumApp = angular.module(
 
     //monitor date selected and fetch shift details for a custom date
     $scope.$watch(function () {
-        console.log('watching associate details : ', SharedService.associateDetails);
+        //console.log('watching associate details : ', SharedService.associateDetails);
 
         $scope.userDetails = SharedService.associateDetails;
 
         $scope.isUserLoggedIn = SharedService.isUserAuthenticated();
 
         if ($scope.userDetails !== undefined) {
-            console.log('FROM MAINCTRL -  user details :: ', $scope.userDetails);
+            //console.log('FROM MAINCTRL -  user details :: ', $scope.userDetails);
             $scope.userRole = $scope.userDetails.role;
         }
 

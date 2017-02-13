@@ -7,21 +7,40 @@
 
     <md-content class="md-no-momentum">
         <div layout="column" flex="">
-            <div id="addAssociateMsg">
+            <div layout="row">
+                <md-input-container flex="50" md-no-float class="md-block">
+                    <input name="associateName" ng-model="associate.associateName" placeholder="Associate Name" required>
+                </md-input-container>
+
+                <md-input-container flex="5" md-no-float class="md-block">
+                </md-input-container>
+
+                <md-input-container flex="50" md-no-float class="md-block">
+                    <input name="associateId" ng-model="associate.associateId" placeholder="Associate Id" required>
+                </md-input-container>
+            </div>
+
+            <div layout="row">
+                <div layout="column" layout-align="center center" flex="50">
+                    <label>Associate Role: </label>
+                    <select class="selectBox" ng-model="associate.role" ng-options="role.name for role in roles"></select>
+                </div>
+
+                <md-input-container flex="5" md-no-float class="md-block">
+                </md-input-container>
+
+                <div layout="column" layout-align="center center" flex="50">
+                    <label>Project(s): </label>
+                    <select class="selectBox" ng-model="associate.project" ng-options="project.projectName for project in projects"></select>
+                </div>
             </div>
 
             <br/>
 
-            <div layout="row" layout-align="center">
-                <md-input-container flex="70" md-no-float class="md-block">
-                    <input name="associateName" ng-model="associateName" placeholder="Associate Name" required>
-                </md-input-container>
+            <div layout="row" layout-align="center" flex>
+                <md-button class="md-raised md-default" ng-click="closeAssociateModal()">close</md-button>
+                <md-button class="md-raised md-primary" ng-click="saveAssociate(associate)">Save</md-button>
             </div>
-        </div>
-
-        <div layout="row" layout-align="center" flex>
-            <md-button class="md-raised md-default" ng-click="closeAssociateModal()">close</md-button>
-            <md-button class="md-raised md-primary" ng-click="saveAssociate(associateName)">Save</md-button>
         </div>
     </md-content>
 </div>

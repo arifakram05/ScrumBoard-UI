@@ -4,7 +4,7 @@ angular.module('scrumApp.project', ['ui.router'])
 
 .factory('projectService', ['$http', '$q', function ($http, $q) {
 
-    var ADD_PROJECT_URI = 'http://127.0.0.1:8080/ScrumBoard/services/addProject/';
+    var ADD_PROJECT_URI = 'http://127.0.0.1:8080/ScrumBoard/services/project/';
 
     var factory = {
         addProject: addProject
@@ -12,6 +12,7 @@ angular.module('scrumApp.project', ['ui.router'])
 
     return factory;
 
+    //Save a Project
     function addProject(projectDetails) {
         console.log('control in add project factory method : ', projectDetails);
         var deferred = $q.defer();
