@@ -1,0 +1,64 @@
+<div class="col-md-8 col-md-offset-2" ng-controller="addScrumCtrl">
+    <md-content class="md-padding">
+        <md-toolbar class="md-primary">
+            <div class="md-toolbar-tools">
+                <h2 class="md-flex">Create Scrum</h2>
+            </div>
+        </md-toolbar>
+
+        <md-content class="md-no-momentum">
+            <div layout="column" flex="">
+                <form name="addScrumForm">
+                    <div layout="row">
+                        <md-input-container flex="50" md-no-float class="md-block">
+                            <input name="scrumName" ng-model="scrum.scrumName" placeholder="Scrum Name" required>
+                            <div class="validation-messages" ng-messages="addScrumForm.scrumName.$error">
+                                <div ng-message="required">Required</div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container flex="5" md-no-float class="md-block">
+                        </md-input-container>
+
+                        <md-input-container flex="50" md-no-float class="md-block">
+                            <md-select name="project" ng-model="selectedProject" required placeholder="Project">
+                                <md-option ng-value="project" ng-repeat="project in projects">{{ project.projectName }}</md-option>
+                            </md-select>
+                            <!--<input type="hidden" ng-bind="scrum.projectName = selectedProject.projectName" />-->
+                            <div class="errors" ng-messages="addScrumForm.project.$error">
+                                <div ng-message="required">Required</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <md-input-container flex="50" md-no-float class="md-block">
+                            <md-datepicker name="startDate" ng-model="rawStartDate" md-placeholder="Start Date" required></md-datepicker>
+                            <input type="hidden" ng-bind="scrum.startDate = ( rawStartDate | date: 'd MMM, yyyy')" />
+                            <div class="validation-messages" ng-messages="addScrumForm.startDate.$error">
+                                <div ng-message="required">Required</div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container flex="5" md-no-float class="md-block"></md-input-container>
+
+                        <md-input-container flex="50" md-no-float class="md-block">
+                            <md-datepicker name="endDate" ng-model="rawEndDate" md-placeholder="End Date" required></md-datepicker>
+                            <input type="hidden" ng-bind="scrum.endDate = ( rawEndDate | date: 'd MMM, yyyy')" />
+                            <div class="validation-messages" ng-messages="addScrumForm.endDate.$error">
+                                <div ng-message="required">Required</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+
+                    <br/>
+
+                    <div layout="row" layout-align="center" flex>
+                        <md-button class="md-raised md-default" ng-click="clearScrum()">Clear</md-button>
+                        <md-button class="md-raised md-primary" ng-disabled="addScrumForm.$invalid" ng-click="addScrum(scrum)">Save</md-button>
+                    </div>
+                </form>
+            </div>
+        </md-content>
+    </md-content>
+</div>

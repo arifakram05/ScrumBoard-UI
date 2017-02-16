@@ -13,8 +13,8 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
 .factory('scrumService', ['$http', '$q', function ($http, $q) {
 
-    var GET_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ComputingServicesApp/services/viewJobApplicants';
-    var GET_FILTERED_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ComputingServicesApp/services/viewJobApplicants';
+    var GET_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumdetails?';
+    var GET_FILTERED_SCRUM_DETAILS_URI = '';
     //test URL
     var TEST_SCRUM_URI = "templates/scrum/scrum.json";
 

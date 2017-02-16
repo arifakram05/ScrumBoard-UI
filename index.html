@@ -29,6 +29,7 @@
                 <li><a ui-sref="scrum">Home</a></li>
                 <li><a ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showProjectModal()">Add Project</a></li>
                 <li><a ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">Add Associate</a></li>
+                <li><a ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addscrum">Add Scrum</a></li>
                 <li><a ng-if='isUserLoggedIn === false' ui-sref="login">Login</a></li>
                 <li><a ng-if='isUserLoggedIn === true' ui-sref="logout">Logout</a></li>
             </ul>
@@ -63,6 +64,7 @@
         <script src="templates/login/login.js"></script>
         <script src="templates/logout/logout.js"></script>
         <script src="templates/scrum/scrum.js"></script>
+        <script src="templates/scrum/addscrum.js"></script>
         <script src="templates/project/project.js"></script>
         <script src="templates/associate/associate.js"></script>
 
