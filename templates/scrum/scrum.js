@@ -15,13 +15,16 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     var GET_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumdetails?';
     var GET_FILTERED_SCRUM_DETAILS_URI = '';
+    var SAVE_SCRUMUPDATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumupdate';
+
     //test URL
     var TEST_SCRUM_URI = "templates/scrum/scrum.json";
 
     //define all factory methods
     var factory = {
         getScrumDetails: getScrumDetails,
-        getFilteredScrumDetails: getFilteredScrumDetails
+        getFilteredScrumDetails: getFilteredScrumDetails,
+        saveScrumUpdate: saveScrumUpdate
     };
 
     return factory;
@@ -30,8 +33,12 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         var deferred = $q.defer();
         $http({
                 method: 'GET',
-                url: TEST_SCRUM_URI
-                    //url: GET_SCRUM_DETAILS_URI
+                //url: TEST_SCRUM_URI
+                url: GET_SCRUM_DETAILS_URI,
+                params: {
+                    scrumDate: selectedDate,
+                    projectName: 'scrum'
+                }
             })
             .then(
                 function success(response) {
@@ -66,6 +73,45 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         return deferred.promise;
     }
 
+    function saveScrumUpdate(scrumDetails, date, projectName) {
+        console.log('ScrumUpdate to save: ', scrumDetails, ' date: ', date, ' project: ', projectName);
+        var deferred = $q.defer();
+
+        $http({
+                method: 'POST',
+                url: SAVE_SCRUMUPDATE_URI,
+                headers: {
+                    'Content-Type': undefined
+                },
+
+                transformRequest: function (data) {
+                    var formData = new FormData();
+                    formData.append("scrumDetails", angular.toJson(data.model));
+                    formData.append("date", date);
+                    formData.append("projectName", projectName);
+                    return formData;
+                },
+                data: {
+                    model: scrumDetails,
+                    date: date,
+                    projectName: projectName
+                },
+            })
+            .success(function (data, status, headers, config) {
+                if (data.code === 200) {
+                    console.log('ScrumUpdate Save Operation Success');
+                    deferred.resolve(data);
+                } else {
+                    deferred.reject(data);
+                }
+            })
+            .error(function (data, status, headers, config) {
+                console.log('ScrumUpdate Save Operation Failed ', status);
+                deferred.reject(data);
+            });
+        return deferred.promise;
+    }
+
 }])
 
 .controller('scrumCtrl', ['$scope', 'scrumService', '$filter', '$mdDialog', '$q', 'SharedService', '$state', function ($scope, scrumService, $filter, $mdDialog, $q, SharedService, $state) {
@@ -84,7 +130,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     this.view_sd_selectedProjectName = '';
     $scope.projects = getProjects();
 
-    var todaysDate = $filter('date')(new Date(), 'mediumDate');
+    var todaysDate = $filter('date')(new Date(), 'd MMM, yyyy');
     fetchTodaysScrumDetails(todaysDate);
 
     //when page loads, make a server call to fetch today's scrum details
@@ -103,12 +149,31 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         });
     }
 
+    //save daily srum update
+    $scope.saveScrumUpdate = function (scrumDetails, projectName) {
+        console.log('ScrumUpdate details : ', scrumDetails, ' project: ', projectName);
+
+        //URI POST call to save the scrum
+        var promise = scrumService.saveScrumUpdate(scrumDetails, $scope.view_sd_selectedDate, projectName);
+        promise.then(function (result) {
+                console.log('Add Scrum Success, data retrieved :', result);
+
+                //Show success message to the user
+                SharedService.showSuccess(result.message);
+            })
+            .catch(function (resError) {
+                console.log('Add scrum failure :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
+    }
+
     //monitor date selected and fetch scrum details
     $scope.$watch('view_sd_rawSelectedDate', function (view_sd_rawSelectedDate) {
         if ($scope.view_sd_searchByProject) {
             console.log('when refined results is in place, cannot call server upon only date selection');
         } else {
-            $scope.view_sd_selectedDate = $filter('date')($scope.view_sd_rawSelectedDate, 'mediumDate');
+            $scope.view_sd_selectedDate = $filter('date')($scope.view_sd_rawSelectedDate, 'd MMM, yyyy');
             console.log('watching....value received : selectedDate', $scope.view_sd_selectedDate);
             //if form valid, then make a server call
             if ($scope.view_sd_selectedDate) {
@@ -116,7 +181,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                 //make GET call to server
                 var promise = scrumService.getScrumDetails($scope.view_sd_selectedDate);
                 promise.then(function (result) {
-                    $scope.scrumProjects = result;
+                    $scope.scrumProjects = result.response;
                     console.log('Scrum projects fetched :', $scope.scrumProjects);
                     //show data table
                     $scope.view_sd_isDataFetched = true;
@@ -131,7 +196,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     $scope.view_sd_refineProjectSearch = function (projectName, rawSelectedDate) {
 
         if (projectName && rawSelectedDate) {
-            $scope.view_sd_selectedDate = $filter('date')(rawSelectedDate, 'mediumDate');
+            $scope.view_sd_selectedDate = $filter('date')(rawSelectedDate, 'd MMM, yyyy');
             console.log('fetching refined results for ', projectName, ' ', $scope.view_sd_selectedDate);
 
             //Make GET call to server

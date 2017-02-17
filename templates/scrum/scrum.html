@@ -55,7 +55,7 @@
 
                         <tr>
                             <td>
-                                <h4 class="text-center">{{view_sd_selectedDate}} - {{project.project}}</h4>
+                                <h4 class="text-center">{{view_sd_selectedDate}} - {{project.projectName}}</h4>
                                 <hr/>
                             </td>
                         </tr>
@@ -66,11 +66,11 @@
                                     <div class="panel-heading" layout="row">
                                         <h3 class="panel-title">{{detail.associateName}}</h3>
 
-                                        <!--div layout="row" layout-align="end" flex>
-                                            <button type="button" class="btn btn-danger btn" ng-if="loggedInUserId === detail.associateId" ng-click="edit_scrum_details(detail)">
-                                                <i class="glyphicon glyphicon-pencil"></i> Edit
+                                        <div layout="row" layout-align="end" flex>
+                                            <button type="button" class="btn btn-danger btn" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
+                                                <i class="glyphicon glyphicon-pencil"></i> Save
                                             </button>
-                                        </div>-->
+                                        </div>
                                     </div>
 
                                     <div class="panel-body">
