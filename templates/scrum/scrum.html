@@ -57,20 +57,18 @@
                             <td>
 
                                 <div class="panel panel-default" ng-repeat="detail in project.scrumDetails | filter : view_sd_search">
-                                    <div class="panel-heading" layout="row" layout-align="center center">
-                                        <h3 class="panel-title">{{detail.associateName}}</h3>
 
-                                        <div layout="row" layout-align="end" flex>
-                                            <!--<button type="button" class="" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
-                                                <img src="img/save.png" style="width:24px;height:24px;" />
-                                            </button>-->
-
-                                            <md-button class="md-icon-button" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
-                                                <md-tooltip>Save</md-tooltip>
-                                                <img src="img/save.png" style="width:35px;height:35px;" />
-                                            </md-button>
+                                    <md-toolbar class="md-primary" layout="row" layout-align="center center" ng-style="{'background-color': getBGColor(detail.associateId)}">
+                                        <div class="md-toolbar-tools">
+                                            <h2 class="md-flex">{{detail.associateName}}</h2>
+                                            <div layout="row" layout-align="end" flex>
+                                                <md-button class="md-icon-button" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
+                                                    <md-tooltip>Save</md-tooltip>
+                                                    <img src="img/save.png" style="width:35px;height:35px;" />
+                                                </md-button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </md-toolbar>
 
                                     <div class="panel-body" style="width: 100%;">
                                         <div style="float: left;width: 33.3%">
@@ -96,48 +94,6 @@
                                         <br style="clear: left;" />
                                     </div>
                                 </div>
-                                <!--<table class="table borderless">
-                                    <thead>
-                                        <tr>
-                                            <th ng-style="{'text-align':'left'}">Scrum Name</th>
-                                            <th ng-style="{'text-align':'left'}">Name/ID</th>
-                                            <th ng-style="{'text-align':'left'}">Yesterday's accomplishments</th>
-                                            <th ng-style="{'text-align':'left'}">Plan for today</th>
-                                            <th ng-style="{'text-align':'left'}">Roadblocks</th>
-                                            <th ng-style="{'text-align':'left'}">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody ng-repeat="detail in project.scrumDetails | filter : view_sd_search">
-                                        <tr>
-                                            <td>
-                                                <span ng-bind="detail.scrumName"></span>
-                                            </td>
-                                            <td>
-                                                <span ng-bind="detail.associateName"></span>
-                                            </td>
-                                            <td>
-                                                <span ng-bind="detail.yesterday"></span>
-                                            </td>
-                                            <td>
-                                                <span ng-bind="detail.today"></span>
-                                            </td>
-                                            <td>
-                                                <span ng-bind="detail.roadblocks"></span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-primary btn" ng-click="edit_scrum_details(detail)">
-                                                        <i class="glyphicon glyphicon-pencil"></i>
-                                                    </button>
-
-                                                    <button type="button" class="btn btn-default btn" ng-click="show_scrum_details(labAsst)">
-                                                        <i class="fa fa-binoculars"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>-->
                             </td>
                         </tr>
                     </table>
