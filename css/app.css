@@ -3,6 +3,9 @@
     z-index: 9999;
 }
 */
+.hand {
+    cursor: pointer;
+}
 
 .selectBox {
     margin: 5px;
