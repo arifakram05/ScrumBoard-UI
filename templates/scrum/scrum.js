@@ -125,6 +125,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         return;
     }
 
+    $scope.userRole = SharedService.getUserRole();
     $scope.loggedInUserId = SharedService.getAssociateId();
 
     this.view_sd_selectedProjectName = '';
@@ -138,7 +139,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         console.log('fetching scrum details for the date ', todaysDate);
         var promise = scrumService.getScrumDetails(todaysDate);
         promise.then(function (result) {
-            $scope.scrumProjects = result;
+            $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
             //Mark today's date as selected date
             $scope.view_sd_selectedDate = todaysDate;

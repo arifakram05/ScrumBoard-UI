@@ -1,72 +1,97 @@
 <html ng-app="scrumApp">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>ScurmBoard</title>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ScurmBoard</title>
 
-        <!--Bootstrap-->
-        <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-        <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen" />
-        <!-- Angular Material style sheet -->
-        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-        <!--Angular growl 2-->
-        <link rel="stylesheet" media="screen" href="css/angular-growl.min.css">
+    <!--Bootstrap-->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen" />
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <!--Angular growl 2-->
+    <link rel="stylesheet" media="screen" href="css/angular-growl.min.css">
 
-        <link data-require="font-awesome@*" data-semver="4.3.0" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="css/app.css" rel="stylesheet" media="screen" />
-    </head>
+    <link data-require="font-awesome@*" data-semver="4.3.0" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet" media="screen" />
+</head>
 
-    <body ng-controller="mainCtrl">
-        <!-- Navigation Bar -->
-        <nav class="navbar navbar-inverse" role="navigation">
+<body ng-controller="mainCtrl">
+    <!-- Navigation Bar -->
+    <md-toolbar ng-style="{'background-color':'darkcyan', 'padding-right':'32px', 'padding-left':'32px'}">
+        <div class="md-toolbar-tools">
+
             <div class="navbar-header">
-                <a class="navbar-brand" ui-sref="scrum">Cerner</a>
+                <img ui-sref="scrum" src="img/logo.png" height="40px" width="40px"/>&nbsp;&nbsp;<span ui-sref="scrum">ScrumBoard</span>
             </div>
-            <ul class="nav navbar-nav">
-                <li><a ui-sref="scrum">Home</a></li>
-                <li><a ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showProjectModal()">Add Project</a></li>
-                <li><a ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">Add Associate</a></li>
-                <li><a ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addscrum">Add Scrum</a></li>
-                <li><a ng-if='isUserLoggedIn === false' ui-sref="login">Login</a></li>
-                <li><a ng-if='isUserLoggedIn === true' ui-sref="logout">Logout</a></li>
-            </ul>
-        </nav>
 
-        <div class="">
-            <div growl></div><!--User Notifications-->
-            <div ui-view>
-            </div>
+            <span flex></span>
+
+            <md-button class="md-icon-button" style="border-radius:0%  !important" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showProjectModal()">
+                <md-tooltip>Add Project</md-tooltip>
+                <img src="img/addProject.png" style="width:35px;height:35px;" />
+            </md-button>
+            <md-button class="md-icon-button" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">
+                <md-tooltip>Add Associate</md-tooltip>
+                <img src="img/addAssociate.png" style="width:35px;height:35px;" />
+            </md-button>
+            <md-button class="md-icon-button" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">
+                <md-tooltip>Remove Associate</md-tooltip>
+                <img src="img/removeAssociate.png" style="width:35px;height:35px;" />
+            </md-button>
+            <md-button class="md-icon-button" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addscrum">
+                <md-tooltip>Add Scrum</md-tooltip>
+                <img src="img/scrum.png" style="width:35px;height:35px;" />
+            </md-button>
+            <md-button class="md-icon-button" aria-label="User" ng-if='isUserLoggedIn === false' ui-sref="login">
+                <md-tooltip>Login</md-tooltip>
+                <img src="img/login.png" style="width:35px;height:35px;" />
+            </md-button>
+            <md-button class="md-icon-button" aria-label="User" ng-if='isUserLoggedIn === true' ui-sref="logout">
+                <md-tooltip>Logout</md-tooltip>
+                <img src="img/logout.png" style="width:35px;height:35px;" />
+            </md-button>
+
         </div>
+    </md-toolbar>
 
-        <!--<script src="js/angular.js"></script>-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.0.1/ui-bootstrap-tpls.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+    <div class="">
+        <div growl></div>
+        <!--User Notifications-->
+        <div ui-view>
+        </div>
+    </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-animate.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-aria.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-messages.min.js"></script>
-        <!-- Angular Material Library -->
-        <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
-        <!--Angular Growl-->
-        <script src="js/angular-growl.min.js"></script>
+    <!--<script src="js/angular.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.0.1/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
 
-        <!--Utilities    -->
-        <script src="js/dirPagination.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-aria.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-messages.min.js"></script>
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <!--Angular Growl-->
+    <script src="js/angular-growl.min.js"></script>
 
-        <script src="js/app.js"></script>
-        <script src="js/sharedapp.js"></script>
-        <script src="templates/login/login.js"></script>
-        <script src="templates/logout/logout.js"></script>
-        <script src="templates/scrum/scrum.js"></script>
-        <script src="templates/scrum/addscrum.js"></script>
-        <script src="templates/project/project.js"></script>
-        <script src="templates/associate/associate.js"></script>
+    <!--Utilities    -->
+    <script src="js/dirPagination.js"></script>
 
-    </body>
+    <script src="js/app.js"></script>
+    <script src="js/sharedapp.js"></script>
+    <script src="templates/login/login.js"></script>
+    <script src="templates/logout/logout.js"></script>
+    <script src="templates/scrum/scrum.js"></script>
+    <script src="templates/scrum/addscrum.js"></script>
+    <script src="templates/project/project.js"></script>
+    <script src="templates/associate/associate.js"></script>
+
+</body>
+
 </html>
