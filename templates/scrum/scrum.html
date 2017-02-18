@@ -57,31 +57,43 @@
                             <td>
 
                                 <div class="panel panel-default" ng-repeat="detail in project.scrumDetails | filter : view_sd_search">
-                                    <div class="panel-heading" layout="row">
+                                    <div class="panel-heading" layout="row" layout-align="center center">
                                         <h3 class="panel-title">{{detail.associateName}}</h3>
 
                                         <div layout="row" layout-align="end" flex>
-                                            <button type="button" class="btn btn-danger btn" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
-                                                <i class="glyphicon glyphicon-pencil"></i> Save
-                                            </button>
+                                            <!--<button type="button" class="" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
+                                                <img src="img/save.png" style="width:24px;height:24px;" />
+                                            </button>-->
+
+                                            <md-button class="md-icon-button" ng-if="loggedInUserId === detail.associateId" ng-click="saveScrumUpdate(detail, project.projectName)">
+                                                <md-tooltip>Save</md-tooltip>
+                                                <img src="img/save.png" style="width:35px;height:35px;" />
+                                            </md-button>
                                         </div>
                                     </div>
 
-                                    <div class="panel-body">
-                                        <md-input-container md-no-float class="md-block" flex>
-                                            <label>Yesterday's Accomplishments</label>
-                                            <textarea name="yesterday" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.yesterday" md-maxlength="150" rows="1" max-rows="2" md-select-on-focus></textarea>
-                                        </md-input-container>
+                                    <div class="panel-body" style="width: 100%;">
+                                        <div style="float: left;width: 33.3%">
+                                            <md-input-container md-no-float class="md-block" flex>
+                                                <label>Yesterday's Accomplishments</label>
+                                                <textarea name="yesterday" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.yesterday" md-maxlength="150" rows="5" max-rows="5" md-select-on-focus></textarea>
+                                            </md-input-container>
+                                        </div>
 
-                                        <md-input-container md-no-float class="md-block" flex>
-                                            <label>Today's Target</label>
-                                            <textarea name="today" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.today" md-maxlength="150" rows="1" max-rows="2" md-select-on-focus></textarea>
-                                        </md-input-container>
+                                        <div style="float: left;width: 33.3%">
+                                            <md-input-container md-no-float class="md-block" flex>
+                                                <label>Today's Target</label>
+                                                <textarea name="today" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.today" md-maxlength="150" rows="5" max-rows="5" md-select-on-focus></textarea>
+                                            </md-input-container>
+                                        </div>
 
-                                        <md-input-container md-no-float class="md-block" flex>
-                                            <label>Roadblocks</label>
-                                            <textarea name="roadblocks" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.roadblocks" md-maxlength="150" rows="1" max-rows="2" md-select-on-focus></textarea>
-                                        </md-input-container>
+                                        <div style="float: left;width: 33.3%">
+                                            <md-input-container md-no-float class="md-block" flex>
+                                                <label>Roadblocks</label>
+                                                <textarea name="roadblocks" ng-readonly="loggedInUserId !== detail.associateId" ng-model="detail.roadblocks" md-maxlength="150" rows="5" max-rows="5" md-select-on-focus></textarea>
+                                            </md-input-container>
+                                        </div>
+                                        <br style="clear: left;" />
                                     </div>
                                 </div>
                                 <!--<table class="table borderless">
