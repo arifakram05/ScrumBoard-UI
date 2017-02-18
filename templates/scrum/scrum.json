@@ -30,17 +30,17 @@
         "projectId": "946923",
         "date": "Feb 8, 2017",
         "scrumDetails": [{
-            "associateId": "046752",
-            "associateName": "Arif Akram",
-            "yesterday": "Completed something",
-            "today": "target something",
-            "roadblocks": ""
-        },{
             "associateId": "346436",
             "associateName": "Nathan",
             "yesterday": "UI refactoring",
             "today": "continue with ui refactoring",
             "roadblocks": "waiting for icons"
+        },{
+            "associateId": "046752",
+            "associateName": "Arif Akram",
+            "yesterday": "Completed something",
+            "today": "target something",
+            "roadblocks": ""
         },{
             "associateId": "97962",
             "associateName": "Tejendra",

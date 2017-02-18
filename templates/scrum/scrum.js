@@ -218,7 +218,6 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     //apply background color based on a condition
     $scope.getBGColor = function (associateId) {
-        console.log('Applying BGColor to ',associateId);
         if($scope.loggedInUserId === associateId) {
             return 'seagreen';
         } else {

@@ -68,8 +68,7 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
         promise.then(function (result) {
                 console.log('Logout Success, data retrieved : ', result);
 
-                //Make the data available to all controllers
-                setApplicationLevelData();
+                SharedService.logout();
 
                 //Navigate to scrum page
                 navigateToLogin();
@@ -78,11 +77,6 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
                 console.log('LOGOUT FAILURE :: ', resError);
                 alert('We are sorry. Something went wrong! Could not log you out.');
             });
-    }
-
-    //Tell the shared module to logout the user
-    function setApplicationLevelData() {
-        SharedService.logout();
     }
 
     //Tell the shared module to navigate the user to login page

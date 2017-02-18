@@ -67,6 +67,17 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
 
     console.log('inside login controller');
 
+    navigateToHomeIfAlreadyLoggedIn();
+
+    //function to redirect user to home page if logged in
+    function navigateToHomeIfAlreadyLoggedIn() {
+        if (SharedService.isUserAuthenticated()) {
+            console.log("Navigating to scrum page as user is already logged in : ", SharedService.isUserAuthenticated());
+            SharedService.navigateToScurmBoard();
+            return;
+        }
+    }
+
     //responsible for logging in the user
     $scope.login = function (associateId) {
         console.log('Logging in for .... ', associateId);

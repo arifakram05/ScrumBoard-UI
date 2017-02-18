@@ -1,6 +1,6 @@
 angular.module('scrumApp.shared', ['ui.router'])
 
-.service('SharedService', ['$state', 'growl', '$http', '$q', function ($state, growl, $http, $q) {
+    .service('SharedService', ['$state', 'growl', '$http', '$q', '$window', function ($state, growl, $http, $q, $window) {
 
     var GET_ALL_PROJECTS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projects/';
 
@@ -40,18 +40,25 @@ angular.module('scrumApp.shared', ['ui.router'])
     function setAssociateDetails(associateDetails) {
         this.associateDetails = associateDetails;
         console.log('Associate details now set :: ', this.associateDetails);
+        $window.localStorage.setItem('sbAssociateDetails', JSON.stringify(associateDetails));
     }
 
     function getAssociateDetails() {
+        if($window.localStorage.getItem('sbAssociateDetails')) {
+            this.associateDetails = JSON.parse($window.localStorage.getItem('sbAssociateDetails'));
+        }
         return this.associateDetails;
     }
 
     function setAuthToken(authToken) {
         this.authToken = authToken;
         console.log('token set : ', this.authToken);
+        $window.localStorage.setItem('sbAuthToken', authToken);
     }
 
     function getAuthToken() {
+        this.authToken = $window.localStorage.getItem('sbAuthToken');
+        console.log('fetching auth token from local storage: ', this.authToken);
         return this.authToken;
     }
 
@@ -78,7 +85,9 @@ angular.module('scrumApp.shared', ['ui.router'])
     }
 
     function isUserAuthenticated() {
-        if (this.associateDetails !== undefined && this.authToken !== '')
+        var localAssociateDetails = JSON.parse($window.localStorage.getItem('sbAssociateDetails'));
+        var localToken = $window.localStorage.getItem('sbAuthToken');
+        if (localAssociateDetails != null && localToken !== '')
             return true;
         else
             return false;
@@ -102,6 +111,9 @@ angular.module('scrumApp.shared', ['ui.router'])
     //logout user
     function logout() {
         this.associateDetails = undefined;
+        this.authToken = '';
+        $window.localStorage.removeItem('sbAssociateDetails');
+        $window.localStorage.removeItem('sbAuthToken');
     }
 
     /*Messages to the user*/
