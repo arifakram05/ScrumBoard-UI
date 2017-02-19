@@ -41,7 +41,7 @@ angular.module('scrumApp.associate', ['ui.router'])
                 data: {
                     model: associate,
                     associateId: associateId
-                },
+                }
             })
             .success(function (data, status, headers, config) {
                 if (data.code === 200) {

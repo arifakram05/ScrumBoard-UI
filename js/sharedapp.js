@@ -1,6 +1,6 @@
 angular.module('scrumApp.shared', ['ui.router'])
 
-    .service('SharedService', ['$state', 'growl', '$http', '$q', '$window', function ($state, growl, $http, $q, $window) {
+.service('SharedService', ['$state', 'growl', '$http', '$q', '$window', function ($state, growl, $http, $q, $window) {
 
     var GET_ALL_PROJECTS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projects/';
 
@@ -17,6 +17,7 @@ angular.module('scrumApp.shared', ['ui.router'])
         getAssociateName: getAssociateName,
         getAssociateId: getAssociateId,
         getUserRole: getUserRole,
+        getAssignedProjects: getAssignedProjects,
 
         showLoginPage: showLoginPage,
         navigateToScurmBoard: navigateToScurmBoard,
@@ -44,7 +45,7 @@ angular.module('scrumApp.shared', ['ui.router'])
     }
 
     function getAssociateDetails() {
-        if($window.localStorage.getItem('sbAssociateDetails')) {
+        if ($window.localStorage.getItem('sbAssociateDetails')) {
             this.associateDetails = JSON.parse($window.localStorage.getItem('sbAssociateDetails'));
         }
         return this.associateDetails;
@@ -71,6 +72,10 @@ angular.module('scrumApp.shared', ['ui.router'])
 
     function getUserRole() {
         return this.associateDetails.role;
+    }
+
+    function getAssignedProjects() {
+        return this.associateDetails.projects;
     }
 
     function showLoginPage() {
@@ -150,7 +155,7 @@ angular.module('scrumApp.shared', ['ui.router'])
             })
             .then(
                 function success(response) {
-                    console.log('Fetched all projects: ',response);
+                    console.log('Fetched all projects: ', response);
                     if (response.data.code === 200) {
                         deferred.resolve(response.data);
                     } else {

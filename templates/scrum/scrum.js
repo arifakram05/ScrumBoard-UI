@@ -29,16 +29,28 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     return factory;
 
-    function getScrumDetails(selectedDate, associateId) {
+    function getScrumDetails(selectedDate, associateId, projectList) {
+        console.log('Getting scrum details for : ' ,associateId, ' ',selectedDate,' ',projectList);
         var deferred = $q.defer();
         $http({
-                method: 'GET',
+                method: 'POST',
                 //url: TEST_SCRUM_URI
                 url: GET_SCRUM_DETAILS_URI,
-                params: {
+                headers: {
+                    'Content-Type': undefined
+                },
+
+                transformRequest: function (data) {
+                    var formData = new FormData();
+                    formData.append("scrumDate", data.scrumDate);
+                    formData.append("associateId", data.associateId);
+                    formData.append("projectList", angular.toJson(data.projectList));
+                    return formData;
+                },
+                data: {
                     scrumDate: selectedDate,
-                    projectName: 'WebAdmin',
-                    associateId: associateId
+                    associateId: associateId,
+                    projectList: projectList
                 }
             })
             .then(
@@ -130,7 +142,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     $scope.userRole = SharedService.getUserRole();
     $scope.loggedInUserId = SharedService.getAssociateId();
-
+    $scope.loggedInUserProjects = SharedService.getAssignedProjects();
     this.view_sd_selectedProjectName = '';
     $scope.projects = getProjects();
 
@@ -140,7 +152,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     //when page loads, make a server call to fetch today's scrum details
     function fetchTodaysScrumDetails(todaysDate) {
         console.log('fetching scrum details for the date ', todaysDate);
-        var promise = scrumService.getScrumDetails(todaysDate, $scope.loggedInUserId);
+        var promise = scrumService.getScrumDetails(todaysDate, $scope.loggedInUserId, $scope.loggedInUserProjects);
         promise.then(function (result) {
             $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
@@ -183,7 +195,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             if ($scope.view_sd_selectedDate) {
                 console.log('calling server to get scrum details for the date ', $scope.view_sd_selectedDate);
                 //make GET call to server
-                var promise = scrumService.getScrumDetails($scope.view_sd_selectedDate, $scope.loggedInUserId);
+                var promise = scrumService.getScrumDetails($scope.view_sd_selectedDate, $scope.loggedInUserId, $scope.loggedInUserProjects);
                 promise.then(function (result) {
                     $scope.scrumProjects = result.response;
                     console.log('Scrum projects fetched :', $scope.scrumProjects);
@@ -221,7 +233,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     //apply background color based on a condition
     $scope.getBGColor = function (associateId) {
-        if($scope.loggedInUserId === associateId) {
+        if ($scope.loggedInUserId === associateId) {
             return 'seagreen';
         } else {
             return 'lightgray';
