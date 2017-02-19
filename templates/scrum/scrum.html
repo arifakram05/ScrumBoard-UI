@@ -6,34 +6,33 @@
 
                     <form name="view_sd_form">
                         <md-calendar name="view_sd_form_rawSelectedDate" ng-model="view_sd_rawSelectedDate" required></md-calendar>
+                    </form>{{view_sd_searchByProject}}
+
+                    <form name="view_sd_refinedSearchForm">
+                        <div layout="column" layout-align="center" ng-if="view_sd_searchByProject">
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <input name="view_sd_projectName_label" ng-model="view_sd_searchProject" placeholder="Project Name">
+                            </md-input-container>
+
+                            <md-input-container flex="">
+                                <label>Projects</label>
+                                <md-select name="view_sd_projectName_combo" ng-model="ctrl.view_sd_selectedProjectName" required>
+                                    <md-option ng-value="project" ng-repeat="project in projects | filter: view_sd_searchProject">{{ project.name }}</md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row" layout-align="center">
+                            <md-switch ng-model="view_sd_searchByProject" ng-disabled="isRefinedSearchEnabled" flex="100">
+                                <p>Refine</p>
+                            </md-switch>
+                        </div>
+
+                        <div layout="row" ng-if="view_sd_searchByProject" layout-align="center">
+                            <md-button ng-click="view_sd_refineProjectSearch(ctrl.view_sd_selectedProjectName.name, view_sd_rawSelectedDate)" class="md-raised md-primary" ng-style="{'height':'20px'}">Submit</md-button>
+                        </div>
                     </form>
 
-                    <div ng-if="userRole === 'admin'">
-                        <form name="view_sd_refinedSearchForm">
-                            <div layout="column" layout-align="center" ng-if="view_sd_searchByProject">
-                                <md-input-container flex="" md-no-float class="md-block">
-                                    <input name="view_sd_projectName_label" ng-model="view_sd_searchProject" placeholder="Project Name">
-                                </md-input-container>
-
-                                <md-input-container flex="">
-                                    <label>Projects</label>
-                                    <md-select name="view_sd_projectName_combo" ng-model="ctrl.view_sd_selectedProjectName" required>
-                                        <md-option ng-value="project" ng-repeat="project in projects | filter: view_sd_searchProject">{{ project.name }}</md-option>
-                                    </md-select>
-                                </md-input-container>
-                            </div>
-
-                            <div layout="row" layout-align="center">
-                                <md-switch ng-model="view_sd_searchByProject" flex="100">
-                                    <p>Refine</p>
-                                </md-switch>
-                            </div>
-
-                            <div layout="row" ng-if="view_sd_searchByProject" layout-align="center">
-                                <md-button ng-click="view_sd_refineProjectSearch(ctrl.view_sd_selectedProjectName.name, view_sd_rawSelectedDate)" class="md-raised md-primary" ng-style="{'height':'20px'}">Submit</md-button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
 
                 <md-input-container flex="5"></md-input-container>

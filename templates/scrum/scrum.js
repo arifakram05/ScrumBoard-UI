@@ -146,6 +146,9 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     this.view_sd_selectedProjectName = '';
     $scope.projects = getProjects();
 
+    //This will let only the user with admin role peform a refined search
+    $scope.isRefinedSearchEnabled = ($scope.userRole !== 'admin');
+
     var todaysDate = $filter('date')(new Date(), 'd MMM, yyyy');
     fetchTodaysScrumDetails(todaysDate);
 
@@ -186,6 +189,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     //monitor date selected and fetch scrum details
     $scope.$watch('view_sd_rawSelectedDate', function (view_sd_rawSelectedDate) {
+        console.log('Is refined search on : ',$scope.view_sd_searchByProject);
         if ($scope.view_sd_searchByProject) {
             console.log('when refined results is in place, cannot call server upon only date selection');
         } else {
@@ -215,7 +219,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             $scope.view_sd_selectedDate = $filter('date')(rawSelectedDate, 'd MMM, yyyy');
             console.log('fetching refined results for ', projectName, ' ', $scope.view_sd_selectedDate);
 
-            //Make GET call to server
+            //Make call to server
             var promise = scrumService.getFilteredScrumDetails($scope.view_sd_selectedDate, projectName);
             promise.then(function (result) {
                 $scope.scrumProjects = result;
