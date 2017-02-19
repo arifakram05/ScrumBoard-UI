@@ -13,6 +13,8 @@ var scrumApp = angular.module(
 .config(function ($stateProvider, $urlRouterProvider, growlProvider, $httpProvider) {
 
     $urlRouterProvider.otherwise('/login');
+
+    //notifications
     growlProvider.globalTimeToLive(5000);
     growlProvider.globalPosition('bottom-right');
     growlProvider.globalDisableCountDown(true);
@@ -31,7 +33,7 @@ var scrumApp = angular.module(
             console.log('Intercepted Service Call....Adding authToken to request....');
             config.headers = config.headers || {};
             if (SharedService.getAuthToken()) {
-                config.headers.Authorization = 'Bearer ' + SharedService.getAuthToken();
+                config.headers.Authorization = SharedService.getAuthToken();
             }
             return config;
         },
@@ -69,12 +71,12 @@ var scrumApp = angular.module(
     }
 
     //Associate Modal
-    $scope.showAssociateModal = function () {
+    /*$scope.showAssociateModal = function () {
         console.log('opening associate modal');
         var modalInstance = $uibModal.open({
             templateUrl: "templates/associate/associate.html",
             controller: "associateCtrl"
         });
-    }
+    }*/
 
 }]);

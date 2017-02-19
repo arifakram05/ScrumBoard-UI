@@ -13,8 +13,8 @@ angular.module('scrumApp.project', ['ui.router'])
     return factory;
 
     //Save a Project
-    function addProject(projectDetails) {
-        console.log('control in add project factory method : ', projectDetails);
+    function addProject(projectName, associateId) {
+        console.log('control in add project factory method : ', projectName, ' ', associateId);
         var deferred = $q.defer();
 
         $http({
@@ -26,18 +26,20 @@ angular.module('scrumApp.project', ['ui.router'])
 
             transformRequest: function (data) {
                 var formData = new FormData();
-                formData.append("projectDetails", angular.toJson(data.model));
+                formData.append("projectName", projectName);
+                formData.append("associateId", associateId);
                 return formData;
             },
             data: {
-                model: projectDetails
+                model: projectName,
+                associateId: associateId
             }
         }).
         success(function (data, status, headers, config) {
             if (data.code !== 200) {
                 deferred.reject(data);
             }
-            console.log('Add Project Success ', data);
+            console.log('Add Project Call Success ', data);
             deferred.resolve(data);
         }).
         error(function (data, status, headers, config) {
@@ -54,8 +56,6 @@ angular.module('scrumApp.project', ['ui.router'])
 
     console.log('inside project controller');
 
-    $scope.project = {};
-
     //Check if user is logged in, only then continue
     if (!SharedService.isUserAuthenticated() && !SharedService.isUserAdmin()) {
         SharedService.showLoginPage();
@@ -66,26 +66,26 @@ angular.module('scrumApp.project', ['ui.router'])
     $scope.saveProject = function (projectName) {
         console.log('Name of the new project is ' + projectName);
 
-        $scope.project.projectName = projectName;
-        $scope.project.authToken = SharedService.getAuthToken();
-        $scope.project.associateId = SharedService.getAssociateId();
-
         //URI POST call to save the project
         if (projectName !== '' || projectName != null) {
-            var promise = projectService.addProject($scope.project);
+            var promise = projectService.addProject(projectName, SharedService.getAssociateId());
             promise.then(function (result) {
                     console.log('Project added successfully :', result);
                     //Show success message to the user
-                    showSuccessMessageToUser('Successfully added the project - ' + projectName);
+                    if(result.code === 200) {
+                        showSuccessMessageToUser('Successfully added the project - ' + projectName);
+                    }
                 })
                 .catch(function (resError) {
-                    console.log('PROJECT ADD FAILURE :: ', resError);
+                    console.log('PROJECT ADD CALL FAILURE :: ', resError.code);
                     //show failure message to the user
-                    if(resError.code === 403) {
-                        showFailureMessageToUser('Login expired. Please re-login');
+                    if (resError.code === 403) {
+                        showFailureMessageToUser(resError.message);
                         //redirect to login page
                         SharedService.logout();
                         SharedService.showLoginPage();
+                    } else if(resError.code === 404) {
+                        SharedService.showWarning(resError.message);
                     } else {
                         showFailureMessageToUser('Failed to add the project - ' + projectName);
                     }
@@ -103,7 +103,6 @@ angular.module('scrumApp.project', ['ui.router'])
     };
 
     function resetProjectForm() {
-        $scope.project = {};
         $scope.projectName = '';
         $scope.addProjectForm.$setPristine();
         $scope.addProjectForm.$setUntouched();

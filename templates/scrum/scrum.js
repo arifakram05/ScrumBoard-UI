@@ -29,7 +29,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     return factory;
 
-    function getScrumDetails(selectedDate) {
+    function getScrumDetails(selectedDate, associateId) {
         var deferred = $q.defer();
         $http({
                 method: 'GET',
@@ -37,7 +37,8 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                 url: GET_SCRUM_DETAILS_URI,
                 params: {
                     scrumDate: selectedDate,
-                    projectName: 'scrum'
+                    projectName: 'WebAdmin',
+                    associateId: associateId
                 }
             })
             .then(
@@ -73,7 +74,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         return deferred.promise;
     }
 
-    function saveScrumUpdate(scrumDetails, date, projectName) {
+    function saveScrumUpdate(scrumDetails, date, projectName, associateId) {
         console.log('ScrumUpdate to save: ', scrumDetails, ' date: ', date, ' project: ', projectName);
         var deferred = $q.defer();
 
@@ -89,13 +90,15 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                     formData.append("scrumDetails", angular.toJson(data.model));
                     formData.append("date", date);
                     formData.append("projectName", projectName);
+                    formData.append("associateId", associateId);
                     return formData;
                 },
                 data: {
                     model: scrumDetails,
                     date: date,
-                    projectName: projectName
-                },
+                    projectName: projectName,
+                    associateId: associateId
+                }
             })
             .success(function (data, status, headers, config) {
                 if (data.code === 200) {
@@ -137,7 +140,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     //when page loads, make a server call to fetch today's scrum details
     function fetchTodaysScrumDetails(todaysDate) {
         console.log('fetching scrum details for the date ', todaysDate);
-        var promise = scrumService.getScrumDetails(todaysDate);
+        var promise = scrumService.getScrumDetails(todaysDate, $scope.loggedInUserId);
         promise.then(function (result) {
             $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
@@ -155,7 +158,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         console.log('ScrumUpdate details : ', scrumDetails, ' project: ', projectName);
 
         //URI POST call to save the scrum
-        var promise = scrumService.saveScrumUpdate(scrumDetails, $scope.view_sd_selectedDate, projectName);
+        var promise = scrumService.saveScrumUpdate(scrumDetails, $scope.view_sd_selectedDate, projectName, $scope.loggedInUserId);
         promise.then(function (result) {
                 console.log('Add Scrum Success, data retrieved :', result);
 
@@ -180,7 +183,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             if ($scope.view_sd_selectedDate) {
                 console.log('calling server to get scrum details for the date ', $scope.view_sd_selectedDate);
                 //make GET call to server
-                var promise = scrumService.getScrumDetails($scope.view_sd_selectedDate);
+                var promise = scrumService.getScrumDetails($scope.view_sd_selectedDate, $scope.loggedInUserId);
                 promise.then(function (result) {
                     $scope.scrumProjects = result.response;
                     console.log('Scrum projects fetched :', $scope.scrumProjects);

@@ -21,8 +21,8 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
     return factory;
 
-    function addScrum(scrum) {
-        console.log('Scrum details to save: ', scrum);
+    function addScrum(scrum, associateId) {
+        console.log('Scrum details to save: ', scrum, ' ', associateId);
         var deferred = $q.defer();
 
         $http({
@@ -35,10 +35,12 @@ angular.module('scrumApp.addScrum', ['ui.router'])
                 transformRequest: function (data) {
                     var formData = new FormData();
                     formData.append("scrumDetails", angular.toJson(data.model));
+                    formData.append("associateId", associateId);
                     return formData;
                 },
                 data: {
-                    model: scrum
+                    model: scrum,
+                    associateId: associateId
                 },
             })
             .success(function (data, status, headers, config) {
@@ -92,22 +94,23 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             console.log('Scrum details being added are ', scrum);
             console.log('projects: ', $scope.projects);
 
+            var associateId = SharedService.getAssociateId();
             //URI POST call to save the scrum
-            var promise = addScrumService.addScrum(scrum);
+            var promise = addScrumService.addScrum(scrum, associateId);
                 promise.then(function (result) {
                 console.log('Add Scrum Success, data retrieved :', result);
 
                 //Show success message to the user
                 SharedService.showSuccess(result.message);
+
+                //clear the form
+                $scope.clearScrum();
             })
             .catch(function (resError) {
                 console.log('Add scrum failure :: ', resError);
                 //show failure message to the user
                 SharedService.showError(resError.message);
             });
-
-            //close the modal
-            $scope.clearScrum();
         }
     }
 

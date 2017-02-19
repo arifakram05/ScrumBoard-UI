@@ -39,7 +39,7 @@ angular.module('scrumApp.shared', ['ui.router'])
 
     function setAssociateDetails(associateDetails) {
         this.associateDetails = associateDetails;
-        console.log('Associate details now set :: ', this.associateDetails);
+        //console.log('Associate details now set :: ', this.associateDetails);
         $window.localStorage.setItem('sbAssociateDetails', JSON.stringify(associateDetails));
     }
 
@@ -52,13 +52,12 @@ angular.module('scrumApp.shared', ['ui.router'])
 
     function setAuthToken(authToken) {
         this.authToken = authToken;
-        console.log('token set : ', this.authToken);
+        //console.log('token set : ', this.authToken);
         $window.localStorage.setItem('sbAuthToken', authToken);
     }
 
     function getAuthToken() {
         this.authToken = $window.localStorage.getItem('sbAuthToken');
-        console.log('fetching auth token from local storage: ', this.authToken);
         return this.authToken;
     }
 
@@ -75,12 +74,12 @@ angular.module('scrumApp.shared', ['ui.router'])
     }
 
     function showLoginPage() {
-        console.log('Inside Shared Controller"s showLoginPage method');
+        //console.log('Inside Shared Controller"s showLoginPage method');
         $state.go('login');
     }
 
     function navigateToScurmBoard() {
-        console.log('Inside Shared Controller"s NavigateToScurmBoard method');
+        //console.log('Inside Shared Controller"s NavigateToScurmBoard method');
         $state.go('scrum');
     }
 

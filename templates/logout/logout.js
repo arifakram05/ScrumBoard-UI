@@ -7,7 +7,7 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
         })
     }])
 
-.factory('logoutService', ['$http', '$q', function ($http, $q) {
+/*.factory('logoutService', ['$http', '$q', function ($http, $q) {
 
     var LOGOUT_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/logout/';
 
@@ -18,7 +18,7 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
     return factory;
 
     function logoutAssociate(associateId) {
-        console.log('control in factory method to logout associate');
+        console.log('control in factory method to logout associate : ',associateId);
         var deferred = $q.defer();
 
         //This code is only in place to mock Http calls
@@ -50,9 +50,9 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
         return deferred.promise;
     }
 
-}])
+}])*/
 
-.controller('logoutCtrl', ['$scope', '$q', 'logoutService', 'SharedService', function ($scope, $q, logoutService, SharedService) {
+.controller('logoutCtrl', ['$scope', '$q', 'SharedService', function ($scope, $q, SharedService) {
 
     console.log('inside logout controller');
 
@@ -64,19 +64,22 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
 
         console.log('Logging out for .... ', associateId);
 
-        var promise = logoutService.logoutAssociate(associateId);
+        //logout user
+        SharedService.logout();
+
+        //Navigate to login page
+        navigateToLogin();
+
+        /*var promise = logoutService.logoutAssociate(associateId);
         promise.then(function (result) {
                 console.log('Logout Success, data retrieved : ', result);
 
-                SharedService.logout();
 
-                //Navigate to scrum page
-                navigateToLogin();
             })
             .catch(function (resError) {
                 console.log('LOGOUT FAILURE :: ', resError);
-                alert('We are sorry. Something went wrong! Could not log you out.');
-            });
+                SharedService.showError('We are sorry. Something went wrong! Could not log you out.');
+            });*/
     }
 
     //Tell the shared module to navigate the user to login page

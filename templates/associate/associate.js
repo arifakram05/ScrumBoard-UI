@@ -2,6 +2,14 @@
 
 angular.module('scrumApp.associate', ['ui.router'])
 
+.config(function ($stateProvider, $urlRouterProvider) {
+    $stateProvider
+        .state('addAssociate', {
+            templateUrl: "templates/associate/associate.html",
+            controller: "associateCtrl"
+        })
+})
+
 .factory('associateService', ['$http', '$q', function ($http, $q) {
 
     var ADD_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/associate/';
@@ -13,8 +21,8 @@ angular.module('scrumApp.associate', ['ui.router'])
 
     return factory;
 
-    function addAssociate(associate) {
-        console.log('Associate details to save: ',associate);
+    function addAssociate(associate, associateId) {
+        console.log('Associate details to save: ', associate);
         var deferred = $q.defer();
 
         $http({
@@ -27,10 +35,12 @@ angular.module('scrumApp.associate', ['ui.router'])
                 transformRequest: function (data) {
                     var formData = new FormData();
                     formData.append("associateDetails", angular.toJson(data.model));
+                    formData.append("associateId", associateId);
                     return formData;
                 },
                 data: {
-                    model: associate
+                    model: associate,
+                    associateId: associateId
                 },
             })
             .success(function (data, status, headers, config) {
@@ -50,13 +60,17 @@ angular.module('scrumApp.associate', ['ui.router'])
 
 }])
 
-.controller('associateCtrl', ['$scope', '$filter', '$q', '$uibModalInstance', 'SharedService', 'associateService', function ($scope, $filter, $q, $uibModalInstance, SharedService, associateService) {
+.controller('associateCtrl', ['$scope', '$filter', '$q', 'SharedService', 'associateService', '$element', function ($scope, $filter, $q, SharedService, associateService, $element) {
 
     console.log('inside associate controller');
 
     $scope.associate = {
         projects: []
     };
+
+    $scope.searchTerm;
+
+    var loggedInAssociateId = SharedService.getAssociateId();
 
     fetchAllProjects();
 
@@ -74,42 +88,67 @@ angular.module('scrumApp.associate', ['ui.router'])
             });
     }
 
+    $element.find('input').on('keydown', function (ev) {
+        ev.stopPropagation();
+    });
+
     //save associate name
     $scope.saveAssociate = function (associate) {
         //add projects list
         console.log('Details of the associate being added to the project is ', associate);
-        console.log('projects: ',$scope.projects);
+        console.log('projects: ', $scope.projects);
 
         //URI POST call to save the associate
-        var promise = associateService.addAssociate(associate);
+        var promise = associateService.addAssociate(associate, loggedInAssociateId);
         promise.then(function (result) {
                 console.log('Add associate Success, data retrieved :', result);
 
                 //Show success message to the user
                 SharedService.showSuccess(result.message);
+
+                //clear form
+                $scope.clearAssociateForm();
             })
             .catch(function (resError) {
                 console.log('Add associate failure :: ', resError);
                 //show failure message to the user
                 SharedService.showError(resError.message);
             });
-
-        //close the modal
-        $scope.closeAssociateModal();
     }
 
-    $scope.closeAssociateModal = function () {
-        $uibModalInstance.dismiss('cancel');
+    //clear project search
+    $scope.clearSearchTerm = function () {
+        $scope.searchTerm = '';
     };
 
-    $scope.roles = ["Project Lead", "Scrum Master", "Team Member"];
+    //clear form
+    $scope.clearAssociateForm = function () {
+        console.log('clearing all form details');
+        $scope.associate = {
+            projects: []
+        };
+        $scope.project = undefined;
+        //$scope.selectedProjects = [{}];
+        $scope.addAssociateForm.$setUntouched();
+        $scope.addAssociateForm.$setPristine();
+    };
 
-    $scope.selectedProjects = [{}];
+    $scope.roles = ["Project/Team Lead", "Scrum Master", "Team Member"];
+
+    $scope.canShowSaveButton = function(associate) {
+        console.log('examining associate object: ',associate);
+        if(associate.associateId && (associate.associateName || associate.projects.length > 0 || associate.role)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //$scope.selectedProjects = [{}];
 
     //function to add selected projects as an array of objects
-    $scope.selectedProject = function(project) {
-        console.log('selected prj : ',project);
+    /*$scope.selectedProject = function (project) {
+        console.log('selected prj : ', project);
         $scope.associate.projects.push(project);
-    }
+    }*/
 
 }]);
