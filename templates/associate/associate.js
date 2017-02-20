@@ -137,7 +137,7 @@ angular.module('scrumApp.associate', ['ui.router'])
 
     $scope.canShowSaveButton = function(associate) {
         console.log('examining associate object: ',associate);
-        if(associate.associateId && (associate.associateName || associate.projects.length > 0 || associate.role)) {
+        if(associate.associateId && associate.associateName && ( associate.projects.length > 0 || associate.role)) {
             return true;
         } else {
             return false;
