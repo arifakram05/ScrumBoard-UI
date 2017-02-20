@@ -34,27 +34,31 @@
 
             </div>
 
-            <md-button class="md-icon-button" style="border-radius:0%  !important" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showProjectModal()">
+            <md-button class="md-icon-button" style="border-radius:0%  !important" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showProjectModal()">
                 <md-tooltip>Add Project</md-tooltip>
                 <img src="img/addProject.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addAssociate">
+            <md-button class="md-icon-button" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addAssociate">
                 <md-tooltip>Add Associate</md-tooltip>
                 <img src="img/addAssociate.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">
+            <md-button class="md-icon-button" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">
                 <md-tooltip>Remove Associate</md-tooltip>
                 <img src="img/removeAssociate.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" aria-label="User" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addscrum">
+            <md-button class="md-icon-button" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addscrum">
                 <md-tooltip>Add Scrum</md-tooltip>
                 <img src="img/scrum.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" aria-label="User" ng-if='isUserLoggedIn === false' ui-sref="login">
+            <md-button class="md-icon-button" ng-if='isUserLoggedIn' ng-click="showUserInfo()">
+                <md-tooltip>My Info</md-tooltip>
+                <img src="img/userDetails.png" style="width:35px;height:35px;" />
+            </md-button>
+            <md-button class="md-icon-button" ng-if='isUserLoggedIn === false' ui-sref="login">
                 <md-tooltip>Login</md-tooltip>
                 <img src="img/login.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" aria-label="User" ng-if='isUserLoggedIn === true' ui-sref="logout">
+            <md-button class="md-icon-button" ng-if='isUserLoggedIn === true' ui-sref="logout">
                 <md-tooltip>Logout</md-tooltip>
                 <img src="img/logout.png" style="width:35px;height:35px;" />
             </md-button>
@@ -95,6 +99,7 @@
     <script src="templates/scrum/addscrum.js"></script>
     <script src="templates/project/project.js"></script>
     <script src="templates/associate/associate.js"></script>
+    <script src="templates/associate/userDetails.js"></script>
 
 </body>
 

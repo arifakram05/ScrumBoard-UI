@@ -1,0 +1,22 @@
+<div class="modal-body">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h2 class="md-flex">Your Info</h2>
+        </div>
+    </md-toolbar>
+
+    <md-content class="md-no-momentum">
+
+        <div layout="column" ng-style="{'padding-left':'30px', 'padding-top':'30px'}" flex="">
+            <p>Name : <b><span ng-bind="associateName"></span></b></p>
+            <p>Id: <b><span ng-bind="associateId"></span></b></p>
+            <p>Role: <b><span ng-bind="role"></span></b></p>
+            <p>Projects: <b><span ng-bind="assignedProjects | json"></span></b></p>
+        </div>
+
+        <div layout="row" layout-align="center" flex>
+            <md-button class="md-raised md-default" ng-click="closeUserDetailsModal()">close</md-button>
+        </div>
+
+    </md-content>
+</div>

@@ -5,6 +5,7 @@ var scrumApp = angular.module(
         'scrumApp.project',
         'scrumApp.associate',
         'scrumApp.addScrum',
+        'scrumApp.userDetails',
         'scrumApp.login',
         'scrumApp.logout',
         'scrumApp.shared'
@@ -70,13 +71,13 @@ var scrumApp = angular.module(
         });
     }
 
-    //Associate Modal
-    /*$scope.showAssociateModal = function () {
-        console.log('opening associate modal');
+    //User Info Modal
+    $scope.showUserInfo = function () {
+        console.log('opening modal to show user info');
         var modalInstance = $uibModal.open({
-            templateUrl: "templates/associate/associate.html",
-            controller: "associateCtrl"
+            templateUrl: "templates/associate/userDetails.html",
+            controller: "userDetailsCtrl"
         });
-    }*/
+    }
 
 }]);
