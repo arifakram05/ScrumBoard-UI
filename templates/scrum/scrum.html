@@ -42,11 +42,20 @@
 
                     <table ng-style="{'text-align':'left', 'margin':'0 auto', 'width':'100%'}" flex dir-paginate="project in scrumProjects | filter:view_sd_search | itemsPerPage: 1">
 
-                        <div layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
+                        <div ng-if="scrumProjects !=  null" layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
                             <md-input-container flex="50" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
                                 <input ng-model="view_sd_search" id="view_sd_search" placeholder="Search">
                             </md-input-container>
                         </div>
+
+                        <div ng-if="scrumProjects ==  null">
+                            <md-toolbar class="noScrumRecords">
+                                <div class="md-toolbar-tools" layout="row" layout-align="center center">
+                                    <h2 class="md-flex">No Scrum records present for the selected date</h2>
+                                </div>
+                            </md-toolbar>
+                        </div>
+
 
                         <tr>
                             <td>

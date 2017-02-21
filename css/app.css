@@ -6,6 +6,10 @@
     cursor: pointer;
 }
 
+.noScrumRecords {
+    background-color: lightslategray !important;
+}
+
 .selectBox {
     margin: 5px;
     border: 1px solid #111;
