@@ -10,6 +10,7 @@
     background-color: lightslategray !important;
 }
 
+/*For select bar*/
 .selectBox {
     margin: 5px;
     border: 1px solid #111;
@@ -49,4 +50,23 @@
 
 .selectdemoSelectHeader md-content._md {
     max-height: 240px;
+}
+
+/*For text editor plugin*/
+.ta-editor {
+    height: 500px;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+/*For project notes detail display*/
+.projectNotesDisplayArea {
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    font-family: inherit;
+    font-size: 100%;
 }

@@ -12,54 +12,39 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
 
 .factory('projectNotesService', ['$http', '$q', function ($http, $q) {
 
-    var GET_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumdetails?';
+    var GET_ALL_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumdetails?';
     var SAVE_SCRUMUPDATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumupdate';
 
     //test URL
-    var TEST_SCRUM_URI = "templates/scrum/scrum.json";
+    var TEST_SCRUM_URI = "templates/projectNotes/projectNotes.json";
 
     //define all factory methods
     var factory = {
-        getScrumDetails: getScrumDetails,
+        getAllNotesForProject: getAllNotesForProject,
         saveScrumUpdate: saveScrumUpdate
     };
 
     return factory;
 
-    function getScrumDetails(selectedDate, associateId, projectList) {
-        console.log('Getting scrum details for : ', associateId, ' ', selectedDate, ' ', projectList);
+    function getAllNotesForProject(selectedProjectName) {
+        console.log('Getting project notes for : ', selectedProjectName);
+
         var deferred = $q.defer();
         $http({
-                method: 'POST',
-                //url: TEST_SCRUM_URI
-                url: GET_SCRUM_DETAILS_URI,
-                headers: {
-                    'Content-Type': undefined
-                },
-
-                transformRequest: function (data) {
-                    var formData = new FormData();
-                    formData.append("scrumDate", data.scrumDate);
-                    formData.append("associateId", data.associateId);
-                    formData.append("projectList", angular.toJson(data.projectList));
-                    return formData;
-                },
-                data: {
-                    scrumDate: selectedDate,
-                    associateId: associateId,
-                    projectList: projectList
-                }
-            })
+            method: 'GET',
+            url: TEST_SCRUM_URI
+            //url: GET_ALL_PROJECT_NOTES_URI
+        })
             .then(
-                function success(response) {
-                    console.log('scrum details data from web service: ', response);
-                    deferred.resolve(response.data);
-                },
-                function error(errResponse) {
-                    console.error('Error while making service call to fetch scrum details ', errResponse);
-                    deferred.reject(errResponse);
-                }
-            );
+            function success(response) {
+                console.log('projct notes details data from web service: ', response);
+                deferred.resolve(response.data);
+            },
+            function error(errResponse) {
+                console.error('Error while making service call to fetch project notes details ', errResponse);
+                deferred.reject(errResponse);
+            }
+        );
         return deferred.promise;
     }
 
@@ -106,7 +91,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
 
 }])
 
-.controller('projectNotesCtrl', ['$scope', 'projectNotesService', '$filter', '$mdDialog', '$q', 'SharedService', '$state', function ($scope, projectNotesService, $filter, $mdDialog, $q, SharedService, $state) {
+.controller('projectNotesCtrl', ['$scope', 'projectNotesService', '$filter', '$mdDialog', '$q', 'SharedService', '$state', '$element', function ($scope, projectNotesService, $filter, $mdDialog, $q, SharedService, $state, $element) {
 
     console.log('inside project notes controller : Associate details - ', SharedService.getAssociateDetails());
 
@@ -115,6 +100,71 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
         SharedService.showLoginPage();
         return;
+    }
+
+    $scope.searchTerm;
+    $scope.selectedProjectForNotes;
+    //$scope.canShowDetailNotes = false;
+    $scope.isUserCreatingNewNote = false;
+
+    fetchAllProjects();
+
+    //get all available projects
+    function fetchAllProjects() {
+        var promise = SharedService.getAllProjects();
+        promise.then(function (result) {
+                console.log('All projects retrieved :', result);
+                $scope.projects = result.response;
+                console.log('project list : ', $scope.projects);
+            })
+            .catch(function (resError) {
+                console.log('Error while fetching projects :: ', resError);
+                //show failure message to the user
+                SharedService.showError('Error occurred while fetching projects');
+            });
+    }
+
+    $element.find('input').on('keydown', function (ev) {
+        ev.stopPropagation();
+    });
+
+    //clear project search
+    $scope.clearSearchTerm = function () {
+        $scope.searchTerm = '';
+    };
+
+    //monitor date selected and fetch scrum details
+    $scope.$watch('selectedProjectForNotes', function (selectedProjectForNotes) {
+        console.log('selected project to fetch notes for is : ', selectedProjectForNotes);
+
+        //if form valid, then make a server call
+        if ($scope.selectedProjectForNotes) {
+            console.log('calling server to get notes for the project ', $scope.selectedProjectForNotes);
+            //make GET call to server
+            var promise = projectNotesService.getAllNotesForProject($scope.selectedProjectForNotes);
+            promise.then(function (result) {
+                $scope.allProjectNotes = result;
+                console.log('all notes for a project fetched :', $scope.allProjectNotes);
+            }).catch(function (resError) {
+                notifyUser('Error occurred while retrieving notes for a project ' + resError);
+            });
+        }
+    });
+
+    //show selected notes
+    $scope.showNotes = function (note) {
+        //$scope.canShowDetailNotes = true;
+        $scope.isUserCreatingNewNote = false;
+        $scope.detailedProjectNote = note.notes
+    }
+
+    /*New Project Related Script*/
+    $scope.addNewNotes = function () {
+        $scope.isUserCreatingNewNote = true;
+    }
+
+    $scope.cancelNewNote = function() {
+        $scope.isUserCreatingNewNote = false;
     }
 
     //alerts to user

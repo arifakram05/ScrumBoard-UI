@@ -1,6 +1,6 @@
 var scrumApp = angular.module(
     'scrumApp', [
-        'ui.router', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination', 'angular-growl',
+        'ui.router', 'ui.bootstrap', 'ngMaterial', 'ngMessages', 'angularUtils.directives.dirPagination', 'angular-growl', 'textAngular',
         'scrumApp.scrum',
         'scrumApp.project',
         'scrumApp.associate',
