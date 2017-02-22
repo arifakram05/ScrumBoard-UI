@@ -7,7 +7,7 @@ angular.module('scrumApp.userDetails', ['ui.router'])
     console.log('inside userDetails controller');
 
     //Check if user is logged in, only then continue
-    if (!SharedService.isUserAuthenticated() && !SharedService.isUserAdmin()) {
+    if (!SharedService.isUserAuthenticated()) {
         SharedService.showLoginPage();
         return;
     }

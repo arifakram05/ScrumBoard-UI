@@ -66,6 +66,14 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
     $scope.scrum = {};
 
+    $scope.userRole = SharedService.getUserRole();
+
+    //Check if user is logged in, only then continue
+    if ($scope.userRole !== 'admin') {
+        SharedService.showLoginPage();
+        return;
+    }
+
     fetchAllProjects();
 
     //fetch all available projects

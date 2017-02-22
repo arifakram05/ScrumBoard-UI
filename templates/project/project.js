@@ -54,10 +54,11 @@ angular.module('scrumApp.project', ['ui.router'])
 
 .controller('projectCtrl', ['$scope', '$filter', '$q', '$uibModalInstance', 'projectService', 'SharedService', function ($scope, $filter, $q, $uibModalInstance, projectService, SharedService) {
 
-    console.log('inside project controller');
+    console.log('inside project controller ',SharedService.getUserRole());
+    $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
-    if (!SharedService.isUserAuthenticated() && !SharedService.isUserAdmin()) {
+    if ($scope.userRole !== 'admin') {
         SharedService.showLoginPage();
         return;
     }

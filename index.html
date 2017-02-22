@@ -42,9 +42,9 @@
                 <md-tooltip>Add Associate</md-tooltip>
                 <img src="img/addAssociate.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" ng-if=' isUserLoggedIn && userRole === "admin" ' ng-click="showAssociateModal()">
-                <md-tooltip>Remove Associate</md-tooltip>
-                <img src="img/removeAssociate.png" style="width:35px;height:35px;" />
+            <md-button class="md-icon-button" ng-if='isUserLoggedIn' ui-sref="projectNotes">
+                <md-tooltip>Project Notes</md-tooltip>
+                <img src="img/notes.png" style="width:35px;height:35px;" />
             </md-button>
             <md-button class="md-icon-button" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addscrum">
                 <md-tooltip>Add Scrum</md-tooltip>
@@ -100,6 +100,7 @@
     <script src="templates/project/project.js"></script>
     <script src="templates/associate/associate.js"></script>
     <script src="templates/associate/userDetails.js"></script>
+    <script src="templates/projectNotes/projectNotes.js"></script>
 
 </body>
 

@@ -23,7 +23,6 @@ angular.module('scrumApp.shared', ['ui.router'])
         showLoginPage: showLoginPage,
         navigateToScurmBoard: navigateToScurmBoard,
         isUserAuthenticated: isUserAuthenticated,
-        isUserAdmin: isUserAdmin,
         verifyUserAndRedirect: verifyUserAndRedirect,
 
         showSuccess: showSuccess,
@@ -104,13 +103,6 @@ angular.module('scrumApp.shared', ['ui.router'])
         if (localAssociateDetails != null && localToken !== '')
             return true;
         else
-            return false;
-    }
-
-    function isUserAdmin() {
-        if (isUserAuthenticated() && getUserRole() === 'admin') {
-            return true;
-        } else
             return false;
     }
 

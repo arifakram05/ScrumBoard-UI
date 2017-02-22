@@ -64,6 +64,14 @@ angular.module('scrumApp.associate', ['ui.router'])
 
     console.log('inside associate controller');
 
+    $scope.userRole = SharedService.getUserRole();
+
+    //Check if user is logged in, only then continue
+    if ($scope.userRole !== 'admin') {
+        SharedService.showLoginPage();
+        return;
+    }
+
     $scope.associate = {
         projects: []
     };
