@@ -64,7 +64,8 @@
 
 /*For project notes detail display*/
 .projectNotesDisplayArea {
-    height: 100%;
+    padding: 50px;
+    padding-top: 10px;
     width: 100%;
     overflow-x: auto;
     font-family: inherit;

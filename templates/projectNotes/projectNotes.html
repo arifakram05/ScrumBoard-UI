@@ -17,7 +17,7 @@
                 </md-input-container>
 
                 <md-button class="md-raised md-primary" ng-if="isUserCreatingNewNote === false && allProjectNotes" ng-click="addNewNotes()">New Note</md-button>
-                <md-button class="md-raised md-primary" ng-if="isUserCreatingNewNote === true" ng-click="saveNewNote()">Save</md-button>
+                <md-button class="md-raised md-primary" ng-if="isUserCreatingNewNote === true" ng-click="saveNewNote(ctrl.newProjectNoteContent, ctrl.newProjectNoteTitle)">Save</md-button>
                 <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="cancelNewNote()">Cancel</md-button>
             </div>
 
@@ -42,14 +42,21 @@
                 <md-input-container flex="5"></md-input-container>
 
                 <!--Selected Project Note Details-->
-                <div ng-bind-html="detailedProjectNote" ng-if="isUserCreatingNewNote === false" class="projectNotesDisplayArea">
+                <div layout="column" class="projectNotesDisplayArea">
+                    <h3>{{noteTitle}}</h3>
+                    <hr/>
+                    <div ng-bind-html="detailedProjectNote" ng-if="isUserCreatingNewNote === false" >
+                    </div>
                 </div>
 
                 <!--New Project Note Creation-->
-                <div ng-if="isUserCreatingNewNote === true">
-                    <h2>Adding new note to the project - {{selectedProjectForNotes.projectName}}</h2>
+                <div ng-if="isUserCreatingNewNote === true" class="projectNotesDisplayArea">
+                    <h3>Working on adding a new note to the project - <span class="newNoteHeader">{{selectedProjectForNotes.projectName}}</span></h3>
+                    <md-input-container flex="" md-no-float class="md-block">
+                        <input name="noteTitle" ng-model="ctrl.newProjectNoteTitle" placeholder="Name or short description for your notes" required>
+                    </md-input-container>
                     <hr/>
-                    <div text-angular="text-angular" name="newNoteContent" ng-model="newNoteContent"></div>
+                    <div text-angular="text-angular" name="ctrl.newProjectNoteContent" ng-model="ctrl.newProjectNoteContent"></div>{{ctrl.newProjectNoteContent}}
                 </div>
 
             </div>

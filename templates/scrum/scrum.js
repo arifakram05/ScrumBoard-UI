@@ -157,8 +157,16 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         console.log('fetching scrum details for the date ', todaysDate);
         var promise = scrumService.getScrumDetails(todaysDate, $scope.loggedInUserId, $scope.loggedInUserProjects);
         promise.then(function (result) {
+            console.log('result from server call ', result);
             $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
+
+            if(result.code === 500) {
+                SharedService.logout();
+                SharedService.showLoginPage();
+                return;
+            }
+
             //Mark today's date as selected date
             $scope.view_sd_selectedDate = todaysDate;
             //show data table
@@ -203,6 +211,11 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                 promise.then(function (result) {
                     $scope.scrumProjects = result.response;
                     console.log('Scrum projects fetched :', $scope.scrumProjects);
+
+                    if(result.code == 500) {
+                        SharedService.logout();
+                    }
+
                     //show data table
                     $scope.view_sd_isDataFetched = true;
                 }).catch(function (resError) {
