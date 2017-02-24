@@ -70,30 +70,30 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         console.log('Getting filtered scrum details for : ', associateId, ' ', selectedDate, ' ', projectName);
         var deferred = $q.defer();
         $http({
-            method: 'POST',
-            url: GET_FILTERED_SCRUM_DETAILS_URI,
-            headers: {
-                'Content-Type': undefined
-            },
+                method: 'POST',
+                url: GET_FILTERED_SCRUM_DETAILS_URI,
+                headers: {
+                    'Content-Type': undefined
+                },
 
-            transformRequest: function (data) {
-                var formData = new FormData();
-                formData.append("scrumDate", selectedDate);
-                formData.append("associateId", associateId);
-                formData.append("projectName", projectName);
-                return formData;
-            }
-        })
+                transformRequest: function (data) {
+                    var formData = new FormData();
+                    formData.append("scrumDate", selectedDate);
+                    formData.append("associateId", associateId);
+                    formData.append("projectName", projectName);
+                    return formData;
+                }
+            })
             .then(
-            function success(response) {
-                console.log('refined scrum details data from web service: ', response);
-                deferred.resolve(response.data);
-            },
-            function error(errResponse) {
-                console.error('Error while making service call to fetch refined scrum details ', errResponse);
-                deferred.reject(errResponse);
-            }
-        );
+                function success(response) {
+                    console.log('refined scrum details data from web service: ', response);
+                    deferred.resolve(response.data);
+                },
+                function error(errResponse) {
+                    console.error('Error while making service call to fetch refined scrum details ', errResponse);
+                    deferred.reject(errResponse);
+                }
+            );
         return deferred.promise;
     }
 
@@ -190,17 +190,21 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     //fetch all available projects
     $scope.fetchAllProjects = function () {
         console.log('fetching all projects for scrum page display');
-        var promise = SharedService.getAllProjects();
-        promise.then(function (result) {
-                console.log('All projects retrieved :', result);
-                $scope.projects = result.response;
-                console.log('project list : ', $scope.projects);
-            })
-            .catch(function (resError) {
-                console.log('Error while fetching projects :: ', resError);
-                //show failure message to the user
-                SharedService.showError('Error occurred while fetching projects');
-            });
+        if (SharedService.getAllAvailableProjects() != null) {
+            $scope.projects = SharedService.getAllAvailableProjects();
+        } else {
+            var promise = SharedService.getAllProjects();
+            promise.then(function (result) {
+                    console.log('All projects retrieved :', result);
+                    $scope.projects = result;
+                    console.log('project list : ', $scope.projects);
+                })
+                .catch(function (resError) {
+                    console.log('Error while fetching projects :: ', resError);
+                    //show failure message to the user
+                    SharedService.showError('Error occurred while fetching projects');
+                });
+        }
     }
 
     //save daily srum update

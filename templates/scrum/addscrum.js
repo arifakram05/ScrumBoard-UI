@@ -79,17 +79,21 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
     //fetch all available projects
     function fetchAllProjects() {
-        var promise = SharedService.getAllProjects();
-        promise.then(function (result) {
-                console.log('All projects retrieved :', result);
-                $scope.projects = result.response;
-                console.log('project list : ', $scope.projects);
-            })
-            .catch(function (resError) {
-                console.log('Error while fetching projects :: ', resError);
-                //show failure message to the user
-                SharedService.showError('Error occurred while fetching projects');
-            });
+        if (SharedService.getAllAvailableProjects() != null) {
+            $scope.projects = SharedService.getAllAvailableProjects();
+        } else {
+            var promise = SharedService.getAllProjects();
+            promise.then(function (result) {
+                    console.log('All projects retrieved :', result);
+                    $scope.projects = result;
+                    console.log('project list : ', $scope.projects);
+                })
+                .catch(function (resError) {
+                    console.log('Error while fetching projects :: ', resError);
+                    //show failure message to the user
+                    SharedService.showError('Error occurred while fetching projects');
+                });
+        }
     }
 
     //add scrum
@@ -106,20 +110,20 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             var associateId = SharedService.getAssociateId();
             //URI POST call to save the scrum
             var promise = addScrumService.addScrum(scrum, associateId);
-                promise.then(function (result) {
-                console.log('Add Scrum Success, data retrieved :', result);
+            promise.then(function (result) {
+                    console.log('Add Scrum Success, data retrieved :', result);
 
-                //Show success message to the user
-                SharedService.showSuccess(result.message);
+                    //Show success message to the user
+                    SharedService.showSuccess(result.message);
 
-                //clear the form
-                $scope.clearScrum();
-            })
-            .catch(function (resError) {
-                console.log('Add scrum failure :: ', resError);
-                //show failure message to the user
-                SharedService.showError(resError.message);
-            });
+                    //clear the form
+                    $scope.clearScrum();
+                })
+                .catch(function (resError) {
+                    console.log('Add scrum failure :: ', resError);
+                    //show failure message to the user
+                    SharedService.showError(resError.message);
+                });
         }
     }
 

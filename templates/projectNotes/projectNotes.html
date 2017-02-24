@@ -24,21 +24,6 @@
 
             <div layout="row">
 
-                <!--<div ng-if="allProjectNotes !=  null" layout="column" layout-align="start" ng-style="{'float':'left', 'width':'25%'}">
-                    <div layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
-                        <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
-                            <input ng-model="notes_search" id="notes_search" placeholder="Search Notes">
-                        </md-input-container>
-                    </div>
-
-                    <div ng-style="{'overflow-x':'hidden'}">
-                        <div ng-repeat="note in allProjectNotes | filter : notes_search">
-                            <md-button class="md-raised md-default" ng-click="showNotes(note)" ng-style="{'width':'100%'}">{{note.title}}</md-button>
-                            <md-tooltip>{{note.title}}</md-tooltip>
-                        </div>
-                    </div>
-                </div>-->
-
                 <md-content ng-if="allProjectNotes !=  null" ng-style="{'float':'left', 'width':'25%'}">
                     <md-list>
                         <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
@@ -56,25 +41,23 @@
                 </md-content>
 
 
-
                 <md-input-container flex="5"></md-input-container>
 
                 <!--Selected Project Note Details-->
-                <div layout="column" class="projectNotesDisplayArea">
+                <div layout="column" class="projectNotesDisplayArea" ng-if="isUserCreatingNewNote === false">
                     <h3>{{noteTitle}}</h3>
                     <hr/>
-                    <div ng-bind-html="detailedProjectNote" ng-if="isUserCreatingNewNote === false">
+                    <div ng-bind-html="detailedProjectNote">
                     </div>
                 </div>
 
                 <!--New Project Note Creation-->
-                <div ng-if="isUserCreatingNewNote === true" class="projectNotesDisplayArea">
+                <div layout="column" ng-if="isUserCreatingNewNote === true" class="projectNotesDisplayArea">
                     <h3>Working on adding a new note to the project - <span class="newNoteHeader">{{selectedProjectForNotes.projectName}}</span></h3>
                     <md-input-container flex="" md-no-float class="md-block">
                         <input name="noteTitle" ng-model="ctrl.newProjectNoteTitle" placeholder="Name or short description for your notes" required>
                     </md-input-container>
-                    <hr/>
-                    <div text-angular="text-angular" name="ctrl.newProjectNoteContent" ng-model="ctrl.newProjectNoteContent"></div>{{ctrl.newProjectNoteContent}}
+                    <div text-angular="text-angular" name="ctrl.newProjectNoteContent" ng-model="ctrl.newProjectNoteContent"></div>
                 </div>
 
             </div>
