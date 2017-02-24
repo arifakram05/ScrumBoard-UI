@@ -17,19 +17,19 @@
                             <md-input-container flex="">
                                 <label>Projects</label>
                                 <md-select name="view_sd_projectName_combo" ng-model="ctrl.view_sd_selectedProjectName" required>
-                                    <md-option ng-value="project" ng-repeat="project in projects | filter: view_sd_searchProject">{{ project.name }}</md-option>
+                                    <md-option ng-value="project" ng-repeat="project in projects | filter: view_sd_searchProject">{{ project.projectName }}</md-option>
                                 </md-select>
                             </md-input-container>
                         </div>
 
                         <div layout="row" layout-align="center">
-                            <md-switch ng-model="view_sd_searchByProject" ng-disabled="isRefinedSearchEnabled" flex="100">
+                            <md-switch ng-model="view_sd_searchByProject" ng-disabled="isRefinedSearchEnabled" ng-click="fetchAllProjects()" flex="100">
                                 <p>Refine</p>
                             </md-switch>
                         </div>
 
                         <div layout="row" ng-if="view_sd_searchByProject" layout-align="center">
-                            <md-button ng-click="view_sd_refineProjectSearch(ctrl.view_sd_selectedProjectName.name, view_sd_rawSelectedDate)" class="md-raised md-primary" ng-style="{'height':'20px'}">Submit</md-button>
+                            <md-button ng-click="view_sd_refineProjectSearch(ctrl.view_sd_selectedProjectName.projectName, view_sd_rawSelectedDate)" class="md-raised md-primary" ng-style="{'height':'20px'}">Submit</md-button>
                         </div>
                     </form>
 
@@ -59,7 +59,9 @@
 
                         <tr>
                             <td>
-                                <h4 class="text-center">{{view_sd_selectedDate}} - {{project.projectName}}</h4>
+                                <p class="text-center">{{view_sd_selectedDate}}</p>
+                                <h4 class="text-center">{{project.scrumName}} :: {{project.projectName}}</h4>
+                                <p class="text-center">{{project.startDate}} - {{project.endDate}}</p>
                                 <hr/>
                             </td>
                         </tr>

@@ -13,8 +13,8 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
 .factory('scrumService', ['$http', '$q', function ($http, $q) {
 
-    var GET_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumdetails?';
-    var GET_FILTERED_SCRUM_DETAILS_URI = '';
+    var GET_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumdetails';
+    var GET_FILTERED_SCRUM_DETAILS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/filteredscrumdetails';
     var SAVE_SCRUMUPDATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrumupdate';
 
     //test URL
@@ -30,7 +30,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     return factory;
 
     function getScrumDetails(selectedDate, associateId, projectList) {
-        console.log('Getting scrum details for : ' ,associateId, ' ',selectedDate,' ',projectList);
+        console.log('Getting scrum details for : ', associateId, ' ', selectedDate, ' ', projectList);
         var deferred = $q.defer();
         $http({
                 method: 'POST',
@@ -66,23 +66,34 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         return deferred.promise;
     }
 
-    function getFilteredScrumDetails(todaysDate, projectName) {
+    function getFilteredScrumDetails(selectedDate, associateId, projectName) {
+        console.log('Getting filtered scrum details for : ', associateId, ' ', selectedDate, ' ', projectName);
         var deferred = $q.defer();
         $http({
-                method: 'GET',
-                url: TEST_SCRUM_URI
-                    //url: GET_FILTERED_SCRUM_DETAILS_URI
-            })
+            method: 'POST',
+            url: GET_FILTERED_SCRUM_DETAILS_URI,
+            headers: {
+                'Content-Type': undefined
+            },
+
+            transformRequest: function (data) {
+                var formData = new FormData();
+                formData.append("scrumDate", selectedDate);
+                formData.append("associateId", associateId);
+                formData.append("projectName", projectName);
+                return formData;
+            }
+        })
             .then(
-                function success(response) {
-                    console.log('scrum details data from web service: ', response);
-                    deferred.resolve(response.data);
-                },
-                function error(errResponse) {
-                    console.error('Error while making service call to fetch scrum details ', errResponse);
-                    deferred.reject(errResponse);
-                }
-            );
+            function success(response) {
+                console.log('refined scrum details data from web service: ', response);
+                deferred.resolve(response.data);
+            },
+            function error(errResponse) {
+                console.error('Error while making service call to fetch refined scrum details ', errResponse);
+                deferred.reject(errResponse);
+            }
+        );
         return deferred.promise;
     }
 
@@ -145,7 +156,6 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     $scope.loggedInUserId = SharedService.getAssociateId();
     $scope.loggedInUserProjects = SharedService.getAssignedProjects();
     this.view_sd_selectedProjectName = '';
-    $scope.projects = getProjects();
 
     //This will let only the user with admin role peform a refined search
     $scope.isRefinedSearchEnabled = ($scope.userRole !== 'admin');
@@ -162,7 +172,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
 
-            if(result.code === 500 || result.code === 403) {
+            if (result.code === 500 || result.code === 403) {
                 SharedService.logout();
                 SharedService.showLoginPage();
                 return;
@@ -175,6 +185,22 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         }).catch(function (resError) {
             notifyUser("Error occurred while retrieving today's scrum details.");
         });
+    }
+
+    //fetch all available projects
+    $scope.fetchAllProjects = function () {
+        console.log('fetching all projects for scrum page display');
+        var promise = SharedService.getAllProjects();
+        promise.then(function (result) {
+                console.log('All projects retrieved :', result);
+                $scope.projects = result.response;
+                console.log('project list : ', $scope.projects);
+            })
+            .catch(function (resError) {
+                console.log('Error while fetching projects :: ', resError);
+                //show failure message to the user
+                SharedService.showError('Error occurred while fetching projects');
+            });
     }
 
     //save daily srum update
@@ -198,7 +224,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
     //monitor date selected and fetch scrum details
     $scope.$watch('view_sd_rawSelectedDate', function (view_sd_rawSelectedDate) {
-        console.log('Is refined search on : ',$scope.view_sd_searchByProject);
+        console.log('Is refined search on : ', $scope.view_sd_searchByProject);
         if ($scope.view_sd_searchByProject) {
             console.log('when refined results is in place, cannot call server upon only date selection');
         } else {
@@ -213,7 +239,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                     $scope.scrumProjects = result.response;
                     console.log('Scrum projects fetched :', $scope.scrumProjects);
 
-                    if(result.code == 500) {
+                    if (result.code == 500 || result.code == 403) {
                         SharedService.logout();
                         SharedService.showLoginPage();
                         return;
@@ -236,12 +262,20 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             console.log('fetching refined results for ', projectName, ' ', $scope.view_sd_selectedDate);
 
             //Make call to server
-            var promise = scrumService.getFilteredScrumDetails($scope.view_sd_selectedDate, projectName);
+            var promise = scrumService.getFilteredScrumDetails($scope.view_sd_selectedDate, $scope.loggedInUserId, projectName);
             promise.then(function (result) {
-                $scope.scrumProjects = result;
-                console.log('Scrum projects fetched :', $scope.scrumProjects);
+                $scope.scrumProjects = result.response;
+                console.log('Scrum projects fetched for filtered criteria:', $scope.scrumProjects);
+
+                if (result.code == 500 || result.code == 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    return;
+                }
+
                 //show data table
                 $scope.view_sd_isDataFetched = true;
+
             }).catch(function (resError) {
                 notifyUser('Error occurred while retrieving scrum details for the project : ' + projectName);
             });
@@ -271,184 +305,3 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     }
 
 }]);
-
-function getProjects() {
-    return [{
-        "name": "Alabama",
-        "abbreviation": "AL"
-    }, {
-        "name": "Alaska",
-        "abbreviation": "AK"
-    }, {
-        "name": "American Samoa",
-        "abbreviation": "AS"
-    }, {
-        "name": "Arizona",
-        "abbreviation": "AZ"
-    }, {
-        "name": "Arkansas",
-        "abbreviation": "AR"
-    }, {
-        "name": "California",
-        "abbreviation": "CA"
-    }, {
-        "name": "Colorado",
-        "abbreviation": "CO"
-    }, {
-        "name": "Connecticut",
-        "abbreviation": "CT"
-    }, {
-        "name": "Delaware",
-        "abbreviation": "DE"
-    }, {
-        "name": "District Of Columbia",
-        "abbreviation": "DC"
-    }, {
-        "name": "Federated States Of Micronesia",
-        "abbreviation": "FM"
-    }, {
-        "name": "Florida",
-        "abbreviation": "FL"
-    }, {
-        "name": "Georgia",
-        "abbreviation": "GA"
-    }, {
-        "name": "Guam",
-        "abbreviation": "GU"
-    }, {
-        "name": "Hawaii",
-        "abbreviation": "HI"
-    }, {
-        "name": "Idaho",
-        "abbreviation": "ID"
-    }, {
-        "name": "Illinois",
-        "abbreviation": "IL"
-    }, {
-        "name": "Indiana",
-        "abbreviation": "IN"
-    }, {
-        "name": "Iowa",
-        "abbreviation": "IA"
-    }, {
-        "name": "Kansas",
-        "abbreviation": "KS"
-    }, {
-        "name": "Kentucky",
-        "abbreviation": "KY"
-    }, {
-        "name": "Louisiana",
-        "abbreviation": "LA"
-    }, {
-        "name": "Maine",
-        "abbreviation": "ME"
-    }, {
-        "name": "Marshall Islands",
-        "abbreviation": "MH"
-    }, {
-        "name": "Maryland",
-        "abbreviation": "MD"
-    }, {
-        "name": "Massachusetts",
-        "abbreviation": "MA"
-    }, {
-        "name": "Michigan",
-        "abbreviation": "MI"
-    }, {
-        "name": "Minnesota",
-        "abbreviation": "MN"
-    }, {
-        "name": "Mississippi",
-        "abbreviation": "MS"
-    }, {
-        "name": "Missouri",
-        "abbreviation": "MO"
-    }, {
-        "name": "Montana",
-        "abbreviation": "MT"
-    }, {
-        "name": "Nebraska",
-        "abbreviation": "NE"
-    }, {
-        "name": "Nevada",
-        "abbreviation": "NV"
-    }, {
-        "name": "New Hampshire",
-        "abbreviation": "NH"
-    }, {
-        "name": "New Jersey",
-        "abbreviation": "NJ"
-    }, {
-        "name": "New Mexico",
-        "abbreviation": "NM"
-    }, {
-        "name": "New York",
-        "abbreviation": "NY"
-    }, {
-        "name": "North Carolina",
-        "abbreviation": "NC"
-    }, {
-        "name": "North Dakota",
-        "abbreviation": "ND"
-    }, {
-        "name": "Northern Mariana Islands",
-        "abbreviation": "MP"
-    }, {
-        "name": "Ohio",
-        "abbreviation": "OH"
-    }, {
-        "name": "Oklahoma",
-        "abbreviation": "OK"
-    }, {
-        "name": "Oregon",
-        "abbreviation": "OR"
-    }, {
-        "name": "Palau",
-        "abbreviation": "PW"
-    }, {
-        "name": "Pennsylvania",
-        "abbreviation": "PA"
-    }, {
-        "name": "Puerto Rico",
-        "abbreviation": "PR"
-    }, {
-        "name": "Rhode Island",
-        "abbreviation": "RI"
-    }, {
-        "name": "South Carolina",
-        "abbreviation": "SC"
-    }, {
-        "name": "South Dakota",
-        "abbreviation": "SD"
-    }, {
-        "name": "Tennessee",
-        "abbreviation": "TN"
-    }, {
-        "name": "Texas",
-        "abbreviation": "TX"
-    }, {
-        "name": "Utah",
-        "abbreviation": "UT"
-    }, {
-        "name": "Vermont",
-        "abbreviation": "VT"
-    }, {
-        "name": "Virgin Islands",
-        "abbreviation": "VI"
-    }, {
-        "name": "Virginia",
-        "abbreviation": "VA"
-    }, {
-        "name": "Washington",
-        "abbreviation": "WA"
-    }, {
-        "name": "West Virginia",
-        "abbreviation": "WV"
-    }, {
-        "name": "Wisconsin",
-        "abbreviation": "WI"
-    }, {
-        "name": "Wyoming",
-        "abbreviation": "WY"
-    }];
-}
