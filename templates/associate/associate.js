@@ -60,14 +60,15 @@ angular.module('scrumApp.associate', ['ui.router'])
 
 }])
 
-.controller('associateCtrl', ['$scope', '$filter', '$q', 'SharedService', 'associateService', '$element', function ($scope, $filter, $q, SharedService, associateService, $element) {
+.controller('associateCtrl', ['$scope', '$filter', '$q', 'SharedService', 'associateService', '$element', '$mdDialog', function ($scope, $filter, $q, SharedService, associateService, $element, $mdDialog) {
 
     console.log('inside associate controller');
 
     $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
-    if ($scope.userRole !== 'admin' && $scope.userRole !== 'lead') {
+    if ($scope.userRole == 'member') {
+        SharedService.logout();
         SharedService.showLoginPage();
         return;
     }
@@ -106,6 +107,11 @@ angular.module('scrumApp.associate', ['ui.router'])
         console.log('Details of the associate being added to the project is ', associate);
         console.log('projects: ', $scope.projects);
 
+        if (associate.title === 'Scrum Master' && $scope.userRole !== 'admin') {
+            notifyUser('You do not have privileges to make an associate Scrum Master');
+            return;
+        }
+
         //URI POST call to save the associate
         var promise = associateService.addAssociate(associate, loggedInAssociateId);
         promise.then(function (result) {
@@ -143,20 +149,30 @@ angular.module('scrumApp.associate', ['ui.router'])
 
     $scope.titles = ["Team Lead", "Scrum Master", "Team Member"];
 
-    $scope.canShowSaveButton = function(associate) {
-        console.log('examining associate object: ',associate);
-        if(associate.associateId && associate.associateName) {
-            return true;
-        } else {
-            return false;
+    $scope.canShowSaveButton = function (associate) {
+            console.log('examining associate object: ', associate);
+            if (associate.associateId && associate.associateName) {
+                return true;
+            } else {
+                return false;
+            }
         }
-    }
-    //$scope.selectedProjects = [{}];
+        //$scope.selectedProjects = [{}];
 
     //function to add selected projects as an array of objects
     /*$scope.selectedProject = function (project) {
         console.log('selected prj : ', project);
         $scope.associate.projects.push(project);
     }*/
+
+    //alerts to user
+    function notifyUser(message) {
+        $mdDialog.show(
+            $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .textContent(message)
+            .ok('Got it!')
+        );
+    }
 
 }]);
