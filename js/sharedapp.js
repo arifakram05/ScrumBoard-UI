@@ -17,6 +17,7 @@ angular.module('scrumApp.shared', ['ui.router'])
         getAssociateName: getAssociateName,
         getAssociateId: getAssociateId,
         getUserRole: getUserRole,
+        getUserTitle: getUserTitle,
         getAssignedProjects: getAssignedProjects,
         getProjectNames: getProjectNames,
 
@@ -74,6 +75,10 @@ angular.module('scrumApp.shared', ['ui.router'])
         return this.associateDetails.role;
     }
 
+    function getUserTitle() {
+        return this.associateDetails.title;
+    }
+
     function getAssignedProjects() {
         return this.associateDetails.projects;
     }
@@ -81,9 +86,11 @@ angular.module('scrumApp.shared', ['ui.router'])
     //iterating over array of objects to get a property in each object
     function getProjectNames() {
         var projects = [];
-        this.associateDetails.projects.forEach(function (elem) {
-            projects.push(elem.projectName);
-        });
+        if (this.associateDetails.projects != null && this.associateDetails.projects.length > 0) {
+            this.associateDetails.projects.forEach(function (elem) {
+                projects.push(elem.projectName);
+            });
+        }
         return projects;
     }
 

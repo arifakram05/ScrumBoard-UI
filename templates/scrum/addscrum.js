@@ -70,6 +70,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
     //Check if user is logged in, only then continue
     if ($scope.userRole !== 'admin') {
+        SharedService.logout();
         SharedService.showLoginPage();
         return;
     }

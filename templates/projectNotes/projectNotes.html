@@ -24,7 +24,7 @@
 
             <div layout="row">
 
-                <div ng-if="allProjectNotes !=  null" layout="column" layout-align="start" ng-style="{'float':'left', 'width':'25%'}">
+                <!--<div ng-if="allProjectNotes !=  null" layout="column" layout-align="start" ng-style="{'float':'left', 'width':'25%'}">
                     <div layout="row" layout-align="center" md-no-float class="md-block" ng-style="{'margin':'0', 'padding':'0'}">
                         <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
                             <input ng-model="notes_search" id="notes_search" placeholder="Search Notes">
@@ -37,7 +37,25 @@
                             <md-tooltip>{{note.title}}</md-tooltip>
                         </div>
                     </div>
-                </div>
+                </div>-->
+
+                <md-content ng-if="allProjectNotes !=  null" ng-style="{'float':'left', 'width':'25%'}">
+                    <md-list>
+                        <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
+                            <input ng-model="notes_search" id="notes_search" placeholder="Search Notes">
+                        </md-input-container>
+
+                        <md-list-item class="md-2-line" ng-repeat="note in allProjectNotes | filter : notes_search">
+                            <div class="md-list-item-text">
+                                <h3 class="hand" ng-click="showNotes(note)">{{note.title}}</h3>
+                                <p>{{note.author}}</p>
+                            </div>
+                            <md-divider></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+
+
 
                 <md-input-container flex="5"></md-input-container>
 
@@ -45,7 +63,7 @@
                 <div layout="column" class="projectNotesDisplayArea">
                     <h3>{{noteTitle}}</h3>
                     <hr/>
-                    <div ng-bind-html="detailedProjectNote" ng-if="isUserCreatingNewNote === false" >
+                    <div ng-bind-html="detailedProjectNote" ng-if="isUserCreatingNewNote === false">
                     </div>
                 </div>
 

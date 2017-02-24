@@ -136,6 +136,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     //Check if user is logged in, only then continue
     if (!SharedService.isUserAuthenticated()) {
         console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
+        SharedService.logout();
         SharedService.showLoginPage();
         return;
     }
@@ -161,7 +162,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
 
-            if(result.code === 500) {
+            if(result.code === 500 || result.code === 403) {
                 SharedService.logout();
                 SharedService.showLoginPage();
                 return;
@@ -214,6 +215,8 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
 
                     if(result.code == 500) {
                         SharedService.logout();
+                        SharedService.showLoginPage();
+                        return;
                     }
 
                     //show data table

@@ -38,7 +38,7 @@
                 <md-tooltip>Add Project</md-tooltip>
                 <img src="img/addProject.png" style="width:35px;height:35px;" />
             </md-button>
-            <md-button class="md-icon-button" ng-if=' isUserLoggedIn && userRole === "admin" ' ui-sref="addAssociate">
+            <md-button class="md-icon-button" ng-if=' isUserLoggedIn && (userRole === "admin" || userRole === "lead")' ui-sref="addAssociate">
                 <md-tooltip>Add Associate</md-tooltip>
                 <img src="img/addAssociate.png" style="width:35px;height:35px;" />
             </md-button>

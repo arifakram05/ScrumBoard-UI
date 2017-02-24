@@ -67,7 +67,7 @@ angular.module('scrumApp.associate', ['ui.router'])
     $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
-    if ($scope.userRole !== 'admin') {
+    if ($scope.userRole !== 'admin' && $scope.userRole !== 'lead') {
         SharedService.showLoginPage();
         return;
     }
@@ -141,7 +141,7 @@ angular.module('scrumApp.associate', ['ui.router'])
         $scope.addAssociateForm.$setPristine();
     };
 
-    $scope.roles = ["Project/Team Lead", "Scrum Master", "Team Member"];
+    $scope.titles = ["Team Lead", "Scrum Master", "Team Member"];
 
     $scope.canShowSaveButton = function(associate) {
         console.log('examining associate object: ',associate);

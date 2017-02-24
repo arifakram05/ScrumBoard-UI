@@ -20,7 +20,7 @@ angular.module('scrumApp.userDetails', ['ui.router'])
 
         $scope.associateName = SharedService.getAssociateName();
         $scope.associateId = SharedService.getAssociateId();
-        $scope.role = SharedService.getUserRole();
+        $scope.title = SharedService.getUserTitle();
         $scope.assignedProjects = SharedService.getProjectNames();
     }
 
