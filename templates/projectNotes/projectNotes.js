@@ -39,7 +39,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
             })
             .then(
                 function success(response) {
-                    console.log('projct notes details data from web service: ', response);
+                    console.log('project notes details data from web service: ', response);
                     deferred.resolve(response.data);
                 },
                 function error(errResponse) {

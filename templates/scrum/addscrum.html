@@ -60,5 +60,15 @@
                 </form>
             </div>
         </md-content>
+
+        <br/>
+
+        <div class="panel panel-info" ng-if="recentScrumRecord != null">
+            <div class="panel-heading">Showing the most recent scrum record for the project : <b>{{selectedProject.projectName}}</b></div>
+            <div class="panel-body">
+                <p>Scrum Name: <b>{{recentScrumRecord[0].scrumName}}</b></p>
+                <p>Last Scrum Start and End Date: <b>{{recentScrumRecord[0].startDate}} - {{recentScrumRecord[0].endDate}}</b></p>
+            </div>
+        </div>
     </md-content>
 </div>

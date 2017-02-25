@@ -13,10 +13,12 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 .factory('addScrumService', ['$http', '$q', function ($http, $q) {
 
     var ADD_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrum/';
+    var GET_RECENT_SCRUM_RECORD = 'http://127.0.0.1:8080/ScrumBoard/services/latestScrum?';
 
     //define all factory methods
     var factory = {
-        addScrum: addScrum
+        addScrum: addScrum,
+        getRecentScrumRecord: getRecentScrumRecord
     };
 
     return factory;
@@ -58,9 +60,33 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         return deferred.promise;
     }
 
+    function getRecentScrumRecord(selectedProjectName) {
+        console.log('Getting recent scrum record for : ', selectedProjectName);
+
+        var deferred = $q.defer();
+        $http({
+                method: 'GET',
+                url: GET_RECENT_SCRUM_RECORD,
+                params: {
+                    projectName: selectedProjectName
+                }
+            })
+            .then(
+                function success(response) {
+                    console.log('recent scrum record from web service: ', response);
+                    deferred.resolve(response.data);
+                },
+                function error(errResponse) {
+                    console.error('Error while making service call to get recent scrum record ', errResponse);
+                    deferred.reject(errResponse);
+                }
+            );
+        return deferred.promise;
+    }
+
 }])
 
-.controller('addScrumCtrl', ['$scope', '$filter', '$q', 'SharedService', 'addScrumService', function ($scope, $filter, $q, SharedService, addScrumService) {
+.controller('addScrumCtrl', ['$scope', '$filter', '$q', 'SharedService', 'addScrumService', '$mdDialog', function ($scope, $filter, $q, SharedService, addScrumService, $mdDialog) {
 
     console.log('inside add scrum controller');
 
@@ -99,6 +125,23 @@ angular.module('scrumApp.addScrum', ['ui.router'])
     //add scrum
     $scope.addScrum = function (scrum) {
         if ($scope.addScrumForm.$valid) {
+
+            //check if new scrum date is acceptable
+            var oldEndDate;
+            var newStartDate
+            if(oldEndDate != null) {
+                oldEndDate = new Date($scope.recentScrumRecord[0].endDate);
+            }
+            if(newStartDate != null) {
+                newStartDate = new Date($scope.scrum.startDate);
+            }
+            if (oldEndDate != null && newStartDate != null) {
+                if (oldEndDate >= newStartDate) {
+                    notifyUser('Please ensure that scrum start date is greater than '+$scope.recentScrumRecord[0].endDate);
+                    return;
+                }
+            }
+
             $scope.addScrumForm.$setSubmitted();
 
             //add selected project name to the scrum
@@ -136,5 +179,34 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         $scope.addScrumForm.$setUntouched();
         $scope.addScrumForm.$setPristine();
     };
+
+    //monitor selected project and get previous scrum dates
+    // only when the data is fetched, user be able to save a new scrum record
+    $scope.$watch('selectedProject', function (selectedProject) {
+        console.log('project selected to add scrum for is : ', $scope.selectedProject);
+        if ($scope.selectedProject) {
+            console.log('making a server call to get all scrum records for this project');
+            //if form valid, then make a server call
+            var promise = addScrumService.getRecentScrumRecord($scope.selectedProject.projectName);
+            promise.then(function (result) {
+                $scope.recentScrumRecord = result.response;
+                console.log('Recent scrum record :', $scope.recentScrumRecord);
+                //show recent scrum record for the selected project
+                $scope.showRecentScrumRecord = true;
+            }).catch(function (resError) {
+                console.log('Error occurred while retrieving recent scrum record for ' + $scope.selectedProject.projectName);
+            });
+        }
+    });
+
+    //alerts to user
+    function notifyUser(message) {
+        $mdDialog.show(
+            $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .textContent(message)
+            .ok('Got it!')
+        );
+    }
 
 }]);
