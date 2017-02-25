@@ -47,9 +47,6 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
         $http.post(LOGIN_ASSOCIATE_URI, associateId)
             .success(
                 function (data, status, headers, config) {
-                    if (data.code !== 200) {
-                        deferred.reject(data);
-                    }
                     console.log('Login Success ', data);
                     deferred.resolve(data);
                 })
@@ -89,6 +86,14 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
         promise.then(function (result) {
                 console.log('Login Success, data retrieved :', result);
 
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+                if (result.code === 403) {
+                    SharedService.showError(result.message);
+                    return
+                }
                 //Make the data available to all controllers
                 setApplicationLevelData(result);
 
@@ -101,11 +106,7 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
             .catch(function (resError) {
                 console.log('LOGIN FAILURE :: ', resError);
                 //show failure message to the user
-                if (resError.code === 403) {
-                    SharedService.showError(resError.message);
-                } else {
-                    SharedService.showError('Internal Server Error. System could not log you in.');
-                }
+                SharedService.showError('Internal Server Error. System could not log you in.');
             });
     }
 

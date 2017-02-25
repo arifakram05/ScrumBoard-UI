@@ -124,12 +124,8 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                 }
             })
             .success(function (data, status, headers, config) {
-                if (data.code === 200) {
-                    console.log('ScrumUpdate Save Operation Success');
-                    deferred.resolve(data);
-                } else {
-                    deferred.reject(data);
-                }
+                console.log('ScrumUpdate Save Operation Success');
+                deferred.resolve(data);
             })
             .error(function (data, status, headers, config) {
                 console.log('ScrumUpdate Save Operation Failed ', status);
@@ -173,6 +169,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             console.log('Scrum projects fetched :', $scope.scrumProjects);
 
             if (result.code === 500 || result.code === 403) {
+                SharedService.showError(result.message);
                 SharedService.logout();
                 SharedService.showLoginPage();
                 return;
@@ -272,6 +269,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                 console.log('Scrum projects fetched for filtered criteria:', $scope.scrumProjects);
 
                 if (result.code == 500 || result.code == 403) {
+                    SharedService.showError(result.message);
                     SharedService.logout();
                     SharedService.showLoginPage();
                     return;

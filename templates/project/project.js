@@ -36,9 +36,6 @@ angular.module('scrumApp.project', ['ui.router'])
             }
         }).
         success(function (data, status, headers, config) {
-            if (data.code !== 200) {
-                deferred.reject(data);
-            }
             console.log('Add Project Call Success ', data);
             deferred.resolve(data);
         }).
@@ -54,7 +51,7 @@ angular.module('scrumApp.project', ['ui.router'])
 
 .controller('projectCtrl', ['$scope', '$filter', '$q', '$uibModalInstance', 'projectService', 'SharedService', function ($scope, $filter, $q, $uibModalInstance, projectService, SharedService) {
 
-    console.log('inside project controller ',SharedService.getUserRole());
+    console.log('inside project controller ', SharedService.getUserRole());
     $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
@@ -73,23 +70,24 @@ angular.module('scrumApp.project', ['ui.router'])
             promise.then(function (result) {
                     console.log('Project added successfully :', result);
                     //Show success message to the user
-                    if(result.code === 200) {
-                        showSuccessMessageToUser('Successfully added the project - ' + projectName);
+                    if (result.code === 200) {
+                        SharedService.showSuccess('Successfully added the project - ' + projectName);
+                    }
+                    if (result.code === 404) {
+                        SharedService.showWarning(result.message);
+                        return;
+                    }
+                    if (result.code === 403 || result.code === 500) {
+                        SharedService.showError(result.message);
+                        SharedService.logout();
+                        SharedService.showLoginPage();
+                        return;
                     }
                 })
                 .catch(function (resError) {
                     console.log('PROJECT ADD CALL FAILURE :: ', resError.code);
                     //show failure message to the user
-                    if (resError.code === 403) {
-                        showFailureMessageToUser(resError.message);
-                        //redirect to login page
-                        SharedService.logout();
-                        SharedService.showLoginPage();
-                    } else if(resError.code === 404) {
-                        SharedService.showWarning(resError.message);
-                    } else {
-                        showFailureMessageToUser('Failed to add the project - ' + projectName);
-                    }
+                    SharedService.showError('Failed to add the project - ' + projectName);
                 });
         }
         //reset form
@@ -108,13 +106,5 @@ angular.module('scrumApp.project', ['ui.router'])
         $scope.addProjectForm.$setPristine();
         $scope.addProjectForm.$setUntouched();
     };
-
-    function showSuccessMessageToUser(message) {
-        SharedService.showSuccess(message);
-    }
-
-    function showFailureMessageToUser(message) {
-        SharedService.showError(message);
-    }
 
 }]);
