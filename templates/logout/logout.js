@@ -68,7 +68,7 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
         SharedService.logout();
 
         //Navigate to login page
-        navigateToLogin();
+        SharedService.showLoginPage();
 
         /*var promise = logoutService.logoutAssociate(associateId);
         promise.then(function (result) {
@@ -80,11 +80,6 @@ angular.module('scrumApp.logout', ['ui.router', 'scrumApp.shared'])
                 console.log('LOGOUT FAILURE :: ', resError);
                 SharedService.showError('We are sorry. Something went wrong! Could not log you out.');
             });*/
-    }
-
-    //Tell the shared module to navigate the user to login page
-    function navigateToLogin() {
-        SharedService.showLoginPage();
     }
 
 }]);

@@ -8,7 +8,9 @@ angular.module('scrumApp.userDetails', ['ui.router'])
 
     //Check if user is logged in, only then continue
     if (!SharedService.isUserAuthenticated()) {
+        SharedService.logout();
         SharedService.showLoginPage();
+        SharedService.showError('Please login to continue');
         return;
     }
 

@@ -145,6 +145,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
         SharedService.logout();
         SharedService.showLoginPage();
+        SharedService.showError('Please login to continue');
         return;
     }
 
@@ -168,10 +169,15 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
             $scope.scrumProjects = result.response;
             console.log('Scrum projects fetched :', $scope.scrumProjects);
 
-            if (result.code === 500 || result.code === 403) {
-                SharedService.showError(result.message);
+            if (result.code === 500) {
+                SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                return;
+            }
+
+            if (result.code === 403) {
                 SharedService.logout();
                 SharedService.showLoginPage();
+                SharedService.showError(result.message);
                 return;
             }
 
@@ -240,9 +246,15 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                     $scope.scrumProjects = result.response;
                     console.log('Scrum projects fetched :', $scope.scrumProjects);
 
-                    if (result.code == 500 || result.code == 403) {
+                    if (result.code === 500) {
+                        SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                        return;
+                    }
+
+                    if (result.code === 403) {
                         SharedService.logout();
                         SharedService.showLoginPage();
+                        SharedService.showError(result.message);
                         return;
                     }
 
@@ -268,10 +280,15 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
                 $scope.scrumProjects = result.response;
                 console.log('Scrum projects fetched for filtered criteria:', $scope.scrumProjects);
 
-                if (result.code == 500 || result.code == 403) {
-                    SharedService.showError(result.message);
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                    return;
+                }
+
+                if (result.code === 403) {
                     SharedService.logout();
                     SharedService.showLoginPage();
+                    SharedService.showError(result.message);
                     return;
                 }
 

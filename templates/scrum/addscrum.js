@@ -46,12 +46,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
                 },
             })
             .success(function (data, status, headers, config) {
-                if (data.code === 200) {
-                    console.log('Add Scrum Operation Success');
-                    deferred.resolve(data);
-                } else {
-                    deferred.reject(data);
-                }
+                deferred.resolve(data);
             })
             .error(function (data, status, headers, config) {
                 console.log('Add Scrum Operation Failed ', status);
@@ -95,9 +90,19 @@ angular.module('scrumApp.addScrum', ['ui.router'])
     $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
-    if ($scope.userRole !== 'admin') {
+    if (!SharedService.isUserAuthenticated()) {
+        console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
         SharedService.logout();
         SharedService.showLoginPage();
+        SharedService.showError('Please login to continue');
+        return;
+    }
+
+    //Check if user has access to this view
+    if ($scope.userRole != 'admin') {
+        SharedService.logout();
+        SharedService.showLoginPage();
+        SharedService.showError('You do not have access to this page. Please re-login for security reasons');
         return;
     }
 
@@ -129,15 +134,15 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             //check if new scrum date is acceptable
             var oldEndDate;
             var newStartDate
-            if(oldEndDate != null) {
+            if (oldEndDate != null) {
                 oldEndDate = new Date($scope.recentScrumRecord[0].endDate);
             }
-            if(newStartDate != null) {
+            if (newStartDate != null) {
                 newStartDate = new Date($scope.scrum.startDate);
             }
             if (oldEndDate != null && newStartDate != null) {
                 if (oldEndDate >= newStartDate) {
-                    notifyUser('Please ensure that scrum start date is greater than '+$scope.recentScrumRecord[0].endDate);
+                    notifyUser('Please ensure that scrum start date is greater than ' + $scope.recentScrumRecord[0].endDate);
                     return;
                 }
             }
@@ -155,6 +160,23 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             var promise = addScrumService.addScrum(scrum, associateId);
             promise.then(function (result) {
                     console.log('Add Scrum Success, data retrieved :', result);
+
+                    if (result.code === 404) {
+                        SharedService.showWarning(result.message);
+                        return;
+                    }
+
+                    if (result.code === 500) {
+                        SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                        return;
+                    }
+
+                    if (result.code === 403) {
+                        SharedService.logout();
+                        SharedService.showLoginPage();
+                        SharedService.showError(result.message);
+                        return;
+                    }
 
                     //Show success message to the user
                     SharedService.showSuccess(result.message);

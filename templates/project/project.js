@@ -55,8 +55,19 @@ angular.module('scrumApp.project', ['ui.router'])
     $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
-    if ($scope.userRole !== 'admin') {
+    if (!SharedService.isUserAuthenticated()) {
+        console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
+        SharedService.logout();
         SharedService.showLoginPage();
+        SharedService.showError('Please login to continue');
+        return;
+    }
+
+    //Check if user has access to this view
+    if ($scope.userRole != 'admin') {
+        SharedService.logout();
+        SharedService.showLoginPage();
+        SharedService.showError('You do not have access to this page. Please re-login for security reasons');
         return;
     }
 
@@ -77,10 +88,14 @@ angular.module('scrumApp.project', ['ui.router'])
                         SharedService.showWarning(result.message);
                         return;
                     }
-                    if (result.code === 403 || result.code === 500) {
+                    if (result.code === 403) {
                         SharedService.showError(result.message);
                         SharedService.logout();
                         SharedService.showLoginPage();
+                        return;
+                    }
+                    if (result.code === 500) {
+                        SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
                         return;
                     }
                 })

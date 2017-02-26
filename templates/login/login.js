@@ -94,6 +94,11 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
                     SharedService.showError(result.message);
                     return
                 }
+
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while logging you in. Please contact administrator');
+                    return
+                }
                 //Make the data available to all controllers
                 setApplicationLevelData(result);
 

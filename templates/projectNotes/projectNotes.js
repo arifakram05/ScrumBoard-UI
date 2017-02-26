@@ -73,12 +73,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
                 }
             })
             .success(function (data, status, headers, config) {
-                if (data.code === 200) {
-                    console.log('ProjectNotes Save Operation Success');
-                    deferred.resolve(data);
-                } else {
-                    deferred.reject(data);
-                }
+                deferred.resolve(data);
             })
             .error(function (data, status, headers, config) {
                 console.log('ProjectNotes Save Operation Failed ', status);
@@ -96,7 +91,9 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
     //Check if user is logged in, only then continue
     if (!SharedService.isUserAuthenticated()) {
         console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
+        SharedService.logout();
         SharedService.showLoginPage();
+        SharedService.showError('Please login to continue');
         return;
     }
 
@@ -208,6 +205,23 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         var promise = projectNotesService.saveNewProjectNote($scope.selectedProjectForNotes.projectName, projectNotes, associateId);
         promise.then(function (result) {
                 console.log('Save Project Notes Success, data retrieved :', result);
+
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                    return;
+                }
+
+                if (result.code === 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    SharedService.showError(result.message);
+                    return;
+                }
 
                 //Show success message to the user
                 SharedService.showSuccess(result.message);

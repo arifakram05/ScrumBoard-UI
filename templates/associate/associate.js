@@ -44,15 +44,9 @@ angular.module('scrumApp.associate', ['ui.router'])
                 }
             })
             .success(function (data, status, headers, config) {
-                if (data.code === 200) {
-                    console.log('Add Associate Operation Success');
-                    deferred.resolve(data);
-                } else {
-                    deferred.reject(data);
-                }
+                deferred.resolve(data);
             })
             .error(function (data, status, headers, config) {
-                console.log('Add Associate Operation Failed ', status);
                 deferred.reject(data);
             });
         return deferred.promise;
@@ -67,9 +61,19 @@ angular.module('scrumApp.associate', ['ui.router'])
     $scope.userRole = SharedService.getUserRole();
 
     //Check if user is logged in, only then continue
+    if (!SharedService.isUserAuthenticated()) {
+        console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
+        SharedService.logout();
+        SharedService.showLoginPage();
+        SharedService.showError('Please login to continue');
+        return;
+    }
+
+    //Check if user has access to this view
     if ($scope.userRole == 'member') {
         SharedService.logout();
         SharedService.showLoginPage();
+        SharedService.showError('You do not have access to this page. Please re-login for security reasons');
         return;
     }
 
@@ -121,6 +125,23 @@ angular.module('scrumApp.associate', ['ui.router'])
         promise.then(function (result) {
                 console.log('Add associate Success, data retrieved :', result);
 
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                    return;
+                }
+
+                if (result.code === 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    SharedService.showError(result.message);
+                    return;
+                }
+
                 //Show success message to the user
                 SharedService.showSuccess(result.message);
 
@@ -146,7 +167,6 @@ angular.module('scrumApp.associate', ['ui.router'])
             projects: []
         };
         $scope.project = undefined;
-        //$scope.selectedProjects = [{}];
         $scope.addAssociateForm.$setUntouched();
         $scope.addAssociateForm.$setPristine();
     };
@@ -154,19 +174,12 @@ angular.module('scrumApp.associate', ['ui.router'])
     $scope.titles = ["Team Lead", "Scrum Master", "Team Member"];
 
     $scope.canShowSaveButton = function (associate) {
-            if (associate.associateId && associate.associateName) {
-                return true;
-            } else {
-                return false;
-            }
+        if (associate.associateId && associate.associateName) {
+            return true;
+        } else {
+            return false;
         }
-        //$scope.selectedProjects = [{}];
-
-    //function to add selected projects as an array of objects
-    /*$scope.selectedProject = function (project) {
-        console.log('selected prj : ', project);
-        $scope.associate.projects.push(project);
-    }*/
+    }
 
     //alerts to user
     function notifyUser(message) {
