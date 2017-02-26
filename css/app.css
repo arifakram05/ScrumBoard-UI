@@ -54,13 +54,20 @@
 }
 
 /*For text editor plugin*/
-.ta-editor {
+.text-editor-panel {
     height: 500px;
     width: 100%;
     overflow-x: auto;
     overflow-y: auto;
     font-family: inherit;
     font-size: 100%;
+}
+.ta-toolbar {
+    background-color: #F0F0F0;
+    padding: 10px 35px 5px;
+    margin-left: 0px;
+    border: 1px solid #EEE;
+    margin-bottom: 10px;
 }
 
 /*For project notes detail display*/

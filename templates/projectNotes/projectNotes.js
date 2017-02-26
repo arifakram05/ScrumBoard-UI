@@ -10,6 +10,23 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         })
 })
 
+.config(function ($provide) {
+    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function (taRegisterTool, taOptions) {
+
+        taOptions.toolbar = [
+            ['h1', 'h2', 'h3'],
+            ['bold', 'italics', 'underline', 'strikeThrough'],
+            ['ul', 'ol'],
+            ['redo', 'undo', 'clear'],
+            ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
+            ['html', 'insertLink'],
+            ['h4', 'p', 'pre', ]
+        ];
+
+        return taOptions;
+    }]);
+})
+
 .factory('projectNotesService', ['$http', '$q', function ($http, $q) {
 
     var GET_ALL_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projectNotes?';
