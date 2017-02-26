@@ -5,6 +5,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('addscrum', {
+            url: '/addscrum',
             templateUrl: "templates/scrum/addscrum.html",
             controller: "addScrumCtrl"
         })

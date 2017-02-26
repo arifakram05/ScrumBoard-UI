@@ -5,6 +5,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('projectNotes', {
+            url: '/notes',
             templateUrl: "templates/projectNotes/projectNotes.html",
             controller: "projectNotesCtrl"
         })

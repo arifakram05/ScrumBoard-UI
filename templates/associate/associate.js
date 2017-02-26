@@ -5,6 +5,7 @@ angular.module('scrumApp.associate', ['ui.router'])
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('addAssociate', {
+            url: '/associate',
             templateUrl: "templates/associate/associate.html",
             controller: "associateCtrl"
         })
