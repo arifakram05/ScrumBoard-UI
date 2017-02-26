@@ -161,17 +161,21 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
             $scope.detailedProjectNote = undefined;
             $scope.noteTitle = undefined;
             //getNotesForSelectedProject($scope.selectedProjectForNotes);
-            console.log('calling server to get notes for the project ', $scope.selectedProjectForNotes);
-            //make GET call to server
-            var promise = projectNotesService.getAllNotesForProject($scope.selectedProjectForNotes.projectName);
-            promise.then(function (result) {
-                $scope.allProjectNotes = result.response;
-                console.log('all notes for a project fetched :', $scope.allProjectNotes);
-            }).catch(function (resError) {
-                notifyUser('Error occurred while retrieving notes for a project ' + resError);
-            });
+            console.log('calling server to get notes for the project ', $scope.selectedProjectForNotes.projectName);
+            getProjectNotesForSelected($scope.selectedProjectForNotes.projectName);
         }
     });
+
+    function getProjectNotesForSelected(selProjectName) {
+        //make GET call to server
+        var promise = projectNotesService.getAllNotesForProject(selProjectName);
+        promise.then(function (result) {
+            $scope.allProjectNotes = result.response;
+            console.log('all notes for a project fetched :', $scope.allProjectNotes);
+        }).catch(function (resError) {
+            notifyUser('Error occurred while retrieving notes for a project ' + resError);
+        });
+    }
 
     /*function getNotesForSelectedProject(selProj) {
         console.log('calling server to get notes for the project ', selProj.projectName);
@@ -247,7 +251,8 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
                 $scope.cancelNewNote();
 
                 //call get all notes for selected project to refresh notes list
-                projectNotesService.getAllNotesForProject($scope.selectedProjectForNotes.projectName);
+                getProjectNotesForSelected($scope.selectedProjectForNotes.projectName);
+                $scope.showNotes(projectNotes);
                 //getNotesForSelectedProject($scope.selectedProjectForNotes.projectName);
             })
             .catch(function (resError) {

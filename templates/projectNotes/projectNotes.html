@@ -24,7 +24,7 @@
 
             <div layout="row">
 
-                <md-content ng-if="allProjectNotes !=  null" ng-style="{'float':'left', 'width':'25%'}">
+                <md-content ng-if="allProjectNotes !=  null" ng-style="{'float':'left', 'width':'25%', 'height':'750px'}">
                     <md-list>
                         <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
                             <input ng-model="notes_search" id="notes_search" placeholder="Search Notes">
@@ -52,10 +52,10 @@
 
                 <!--New Project Note Creation-->
                 <div layout="column" ng-if="isUserCreatingNewNote === true" class="projectNotesDisplayArea">
-                    <h3>Working on adding a new note to the project - <span class="newNoteHeader">{{selectedProjectForNotes.projectName}}</span></h3>
-                    <md-input-container flex="" md-no-float class="md-block">
-                        <input name="noteTitle" ng-model="ctrl.newProjectNoteTitle" placeholder="Name or short description for your notes" required>
-                    </md-input-container>
+                    <h3 ng-style="{'margin-bottom':'10px'}">Working on adding a new note to the project - <span class="newNoteHeader">{{selectedProjectForNotes.projectName}}</span></h3>
+                    <div ng-style="{'margin-bottom':'10px'}">
+                        <input name="noteTitle" class="form-control" ng-model="ctrl.newProjectNoteTitle" placeholder="Name or short description for your notes" required>
+                    </div>
                     <div class="text-editor-panel" text-angular="text-angular" name="ctrl.newProjectNoteContent" ng-model="ctrl.newProjectNoteContent"></div>
                 </div>
 
