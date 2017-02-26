@@ -45,16 +45,9 @@
 
                 <!--Selected Project Note Details-->
                 <div layout="column" class="projectNotesDisplayArea" ng-if="isUserCreatingNewNote === false">
-                    <md-toolbar class="md-warn" ng-if="isUserCreatingNewNote === false">
-                        <div class="md-toolbar-tools">
-                            <h3 class="md-flex">{{noteTitle}}</h3>
-                        </div>
-                    </md-toolbar>
-
-                    <md-content flex layout-padding>
-                        <div ng-bind-html="detailedProjectNote">
-                        </div>
-                    </md-content>
+                    <h3>{{noteTitle}}</h3>
+                    <div ng-bind-html="detailedProjectNote">
+                    </div>
                 </div>
 
                 <!--New Project Note Creation-->
