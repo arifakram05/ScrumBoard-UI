@@ -6,7 +6,6 @@ angular.module('scrumApp.shared', ['ui.router'])
 
     this.associateDetails = {};
     this.authToken = '';
-    this.allAvailableProjects = [];
 
     var service = {
         setAssociateDetails: setAssociateDetails,
@@ -21,7 +20,6 @@ angular.module('scrumApp.shared', ['ui.router'])
         getUserTitle: getUserTitle,
         getAssignedProjects: getAssignedProjects,
         getProjectNames: getProjectNames,
-        getAllAvailableProjects: getAllAvailableProjects,
 
         showLoginPage: showLoginPage,
         navigateToScurmBoard: navigateToScurmBoard,
@@ -129,7 +127,6 @@ angular.module('scrumApp.shared', ['ui.router'])
         this.authToken = '';
         $window.localStorage.removeItem('sbAssociateDetails');
         $window.localStorage.removeItem('sbAuthToken');
-        window.localStorage.removeItem('allAvailableProjects');
     }
 
     /*Messages to the user*/
@@ -157,26 +154,6 @@ angular.module('scrumApp.shared', ['ui.router'])
         });
     }
 
-    //get all available projects in the system
-    function getAllAvailableProjects() {
-        if ($window.localStorage.getItem("allAvailableProjects") != null) {
-            if(this.allAvailableProjects != null && this.allAvailableProjects.length > 0) {
-                console.log('data exists in cache');
-                return this.allAvailableProjects;
-            } else {
-                console.log('putting data into cache');
-                this.allAvailableProjects = JSON.parse($window.localStorage.getItem("allAvailableProjects"));
-                if (this.allAvailableProjects.length > 0) {
-                    console.log("returning all available projects from cache");
-                    return this.allAvailableProjects;
-                }
-            }
-        } else {
-            return null;
-        }
-    }
-
-
     //Common service calls
     function getAllProjects() {
         deferred = $q.defer();
@@ -189,8 +166,8 @@ angular.module('scrumApp.shared', ['ui.router'])
                     console.log('Fetched all projects: ', response);
                     if (response.data.code === 200) {
                         deferred.resolve(response.data.response);
-                        $window.localStorage.setItem("allAvailableProjects", JSON.stringify(response.data.response));
                     } else {
+                        showError('Something went wrong while fetching project list');
                         deferred.reject(response);
                     }
                 },
