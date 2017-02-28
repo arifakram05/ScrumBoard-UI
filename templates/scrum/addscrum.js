@@ -5,7 +5,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('addscrum', {
-            url: '/addscrum',
+            /*url: '/addscrum',*/
             templateUrl: "templates/scrum/addscrum.html",
             controller: "addScrumCtrl"
         })
@@ -90,6 +90,17 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
     $scope.userRole = SharedService.getUserRole();
 
+    //for scrum update
+    $scope.users = [
+        {'id': 1, 'first': 'John', 'last': 'Depp', 'age':52, 'gender':'male'},
+        {'id': 2, 'first': 'Sally', 'last': 'JoHanson', 'age':13, 'gender':'female'},
+        {'id': 3, 'first': 'Taylor', 'last': 'Swift', 'age':22, 'gender':'female'},
+        {'id': 4, 'first': 'Max', 'last': 'Payne', 'age':72, 'gender':'male'},
+        {'id': 5, 'first': 'Jessica', 'last': 'Hutton', 'age':12, 'gender':'female'},
+        {'id': 6, 'first': 'Nicholas', 'last': 'Cage','age':3, 'gender':'male'},
+        {'id': 7, 'first': 'Lisa', 'last': 'Simpson', 'age':18, 'gender':'female'}
+    ];
+
     //Check if user is logged in, only then continue
     if (!SharedService.isUserAuthenticated()) {
         console.log("Is user authenticated : ", SharedService.isUserAuthenticated());
@@ -131,10 +142,11 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             //check if new scrum date is acceptable
             var oldEndDate;
             var newStartDate
-            if (oldEndDate != null) {
+            var newEndDate;
+            if (oldEndDate === undefined) {
                 oldEndDate = new Date($scope.recentScrumRecord[0].endDate);
             }
-            if (newStartDate != null) {
+            if (newStartDate === undefined) {
                 newStartDate = new Date($scope.scrum.startDate);
             }
             if (oldEndDate != null && newStartDate != null) {
@@ -142,6 +154,15 @@ angular.module('scrumApp.addScrum', ['ui.router'])
                     notifyUser('Please ensure that scrum start date is greater than ' + $scope.recentScrumRecord[0].endDate);
                     return;
                 }
+            }
+            if (newEndDate === undefined) {
+                newEndDate = new Date($scope.scrum.endDate);
+            }
+
+            //check if end date is greater than start date
+            if(newStartDate >= newEndDate) {
+                notifyUser('Please ensure that End Date is greater than Start Date');
+                return;
             }
 
             $scope.addScrumForm.$setSubmitted();
@@ -189,12 +210,30 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         }
     }
 
+    //Update scrum function
+    $scope.updateScrum = function(scrum, associate) {
+        //check if the operation is Add or Update
+        if($scope.isScrumBeingUpdated != null && $scope.isScrumBeingUpdated === true) {
+            //if operation is scrum update, fill in the missing values
+            scrum.scrumName = $scope.recentScrumRecord[0].scrumName;
+            scrum.startDate = $scope.recentScrumRecord[0].startDate;
+            scrum.endDate = $scope.recentScrumRecord[0].endDate;
+            scrum.projectName = $scope.selectedProject.projectName;
+
+            console.log('scrum details to udpate ',scrum, ' associate being added : ',associate);
+
+            //make server call
+        }
+    }
+
+    //clear scrum form
     $scope.clearScrum = function () {
         console.log('clearing all form details');
-        $scope.rawStartDate = undefined;
-        $scope.rawEndDate = undefined;
+        $scope.ctrl.rawStartDate = undefined;
+        $scope.ctrl.rawEndDate = undefined;
         $scope.selectedProject = undefined;
         $scope.scrum = {};
+        $scope.ctrl.selectedAsscForUpdate = undefined;
         $scope.addScrumForm.$setUntouched();
         $scope.addScrumForm.$setPristine();
     };
