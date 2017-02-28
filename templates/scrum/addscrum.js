@@ -236,6 +236,8 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         $scope.ctrl.selectedAsscForUpdate = undefined;
         $scope.addScrumForm.$setUntouched();
         $scope.addScrumForm.$setPristine();
+        //clear retrieved recent scrum record
+        $scope.recentScrumRecord = undefined;
     };
 
     //monitor selected project and get previous scrum dates
