@@ -64,7 +64,7 @@
                     <div layout="row" layout-align="center" flex>
                         <md-button class="md-raised md-default" ng-click="clearScrum()">Clear</md-button>
                         <md-button class="md-raised md-primary" ng-if="isScrumBeingUpdated === undefined || isScrumBeingUpdated === false" ng-disabled="addScrumForm.$invalid" ng-click="addScrum(scrum)">Save</md-button>
-                        <md-button class="md-raised md-primary" ng-if="isScrumBeingUpdated === true" ng-disabled="!ctrl.selectedAsscForUpdate || !selectedProject" ng-click="updateScrum(scrum, ctrl.selectedAsscForUpdate)">Update</md-button>
+                        <md-button class="md-raised md-primary" ng-if="isScrumBeingUpdated === true" ng-disabled="!ctrl.selectedAsscForUpdate || !selectedProject || !recentScrumRecord[0]" ng-click="updateScrum(scrum, ctrl.selectedAsscForUpdate)">Update</md-button>
                     </div>
                 </form>
             </div>
