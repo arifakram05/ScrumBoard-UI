@@ -20,9 +20,23 @@
                             </div>
                         </md-input-container>
 
-                        <md-input-container flex="50" md-no-float class="md-block" ng-if="isScrumBeingUpdated === true">
-                            <input name="associates" type="text" placeholder="Search Associate" ng-model="ctrl.selectedAsscForUpdate" typeahead-editable="false" uib-typeahead="user as (user.first + ' ' + user.last) for user in users | filter:$viewValue" />{{selectedAsscForUpdate}}
+                        <!--<md-input-container flex="50" md-no-float class="md-block" ng-if="isScrumBeingUpdated === true">
+                            <input name="associates" type="text" placeholder="Search Associate" ng-model="ctrl.selectedAsscForUpdate" typeahead-editable="false" uib-typeahead="user as (user.first + ' ' + user.last) for user in users | filter:$viewValue" />
+                        </md-input-container>-->
+
+
+                        <md-input-container flex="50" md-no-float class="md-block" ng-show="isScrumBeingUpdated">
+                            <label>Associate ID or Name</label>
+                            <md-select ng-model="ctrl.selectedAsscForUpdate" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="searchTerm" ng-change="search(searchTerm)" type="search" placeholder="Search ID or Name of the assoicate..." class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup>
+                                    <md-option ng-value="assc" ng-repeat="assc in filteredAssociates | filter:searchTerm">{{assc.associateName}}</md-option>
+                                </md-optgroup>
+                            </md-select>
                         </md-input-container>
+
 
                         <md-input-container flex="5" md-no-float class="md-block">
                         </md-input-container>

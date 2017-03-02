@@ -14,12 +14,16 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 .factory('addScrumService', ['$http', '$q', function ($http, $q) {
 
     var ADD_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrum/';
+    var UPDATE_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/updateScrum/';
     var GET_RECENT_SCRUM_RECORD = 'http://127.0.0.1:8080/ScrumBoard/services/latestScrum?';
+    var SEARCH_ASSOCIATES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/searchAssociate?';
 
     //define all factory methods
     var factory = {
         addScrum: addScrum,
-        getRecentScrumRecord: getRecentScrumRecord
+        updateScrum: updateScrum,
+        getRecentScrumRecord: getRecentScrumRecord,
+        searchAssociates: searchAssociates
     };
 
     return factory;
@@ -56,6 +60,39 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         return deferred.promise;
     }
 
+    function updateScrum(scrum, associate, loggedInAsscID) {
+        console.log('Scrum details to udpate: ', scrum, ' ', associate,' ',loggedInAsscID);
+        var deferred = $q.defer();
+
+        $http({
+            method: 'POST',
+            url: UPDATE_SCRUM_URI,
+            headers: {
+                'Content-Type': undefined
+            },
+
+            transformRequest: function (data) {
+                var formData = new FormData();
+                formData.append("scrumDetails", angular.toJson(data.model));
+                formData.append("associateDetails", angular.toJson(data.associate));
+                formData.append("associateId", loggedInAsscID);
+                return formData;
+            },
+            data: {
+                model: scrum,
+                associate: associate
+            },
+        })
+            .success(function (data, status, headers, config) {
+            deferred.resolve(data);
+        })
+            .error(function (data, status, headers, config) {
+            console.log('Update Scrum Operation Failed ', status);
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    }
+
     function getRecentScrumRecord(selectedProjectName) {
         console.log('Getting recent scrum record for : ', selectedProjectName);
 
@@ -80,26 +117,39 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         return deferred.promise;
     }
 
+    function searchAssociates(searchText) {
+        console.log('search string : ', searchText);
+
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: SEARCH_ASSOCIATES_URI,
+            params: {
+                associate: searchText
+            }
+        })
+            .then(
+            function success(response) {
+                console.log('associates retrieved per search criteria: ', response);
+                deferred.resolve(response.data);
+            },
+            function error(errResponse) {
+                console.error('Error while making service call to search for associates ', errResponse);
+                deferred.reject(errResponse);
+            }
+        );
+        return deferred.promise;
+    }
+
 }])
 
-.controller('addScrumCtrl', ['$scope', '$filter', '$q', 'SharedService', 'addScrumService', '$mdDialog', function ($scope, $filter, $q, SharedService, addScrumService, $mdDialog) {
+.controller('addScrumCtrl', ['$scope', '$filter', '$q', 'SharedService', 'addScrumService', '$mdDialog', '$element', function ($scope, $filter, $q, SharedService, addScrumService, $mdDialog, $element) {
 
     console.log('inside add scrum controller');
 
     $scope.scrum = {};
 
     $scope.userRole = SharedService.getUserRole();
-
-    //for scrum update
-    $scope.users = [
-        {'id': 1, 'first': 'John', 'last': 'Depp', 'age':52, 'gender':'male'},
-        {'id': 2, 'first': 'Sally', 'last': 'JoHanson', 'age':13, 'gender':'female'},
-        {'id': 3, 'first': 'Taylor', 'last': 'Swift', 'age':22, 'gender':'female'},
-        {'id': 4, 'first': 'Max', 'last': 'Payne', 'age':72, 'gender':'male'},
-        {'id': 5, 'first': 'Jessica', 'last': 'Hutton', 'age':12, 'gender':'female'},
-        {'id': 6, 'first': 'Nicholas', 'last': 'Cage','age':3, 'gender':'male'},
-        {'id': 7, 'first': 'Lisa', 'last': 'Simpson', 'age':18, 'gender':'female'}
-    ];
 
     //Check if user is logged in, only then continue
     if (!SharedService.isUserAuthenticated()) {
@@ -143,7 +193,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             var oldEndDate;
             var newStartDate
             var newEndDate;
-            if (oldEndDate === undefined) {
+            if ($scope.recentScrumRecord[0] !== undefined && oldEndDate === undefined) {
                 oldEndDate = new Date($scope.recentScrumRecord[0].endDate);
             }
             if (newStartDate === undefined) {
@@ -160,7 +210,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             }
 
             //check if end date is greater than start date
-            if(newStartDate >= newEndDate) {
+            if (newStartDate >= newEndDate) {
                 notifyUser('Please ensure that End Date is greater than Start Date');
                 return;
             }
@@ -211,20 +261,72 @@ angular.module('scrumApp.addScrum', ['ui.router'])
     }
 
     //Update scrum function
-    $scope.updateScrum = function(scrum, associate) {
+    $scope.updateScrum = function (scrum, associate) {
         //check if the operation is Add or Update
-        if($scope.isScrumBeingUpdated != null && $scope.isScrumBeingUpdated === true) {
+        if ($scope.isScrumBeingUpdated != null && $scope.isScrumBeingUpdated === true) {
             //if operation is scrum update, fill in the missing values
             scrum.scrumName = $scope.recentScrumRecord[0].scrumName;
             scrum.startDate = $scope.recentScrumRecord[0].startDate;
             scrum.endDate = $scope.recentScrumRecord[0].endDate;
             scrum.projectName = $scope.selectedProject.projectName;
 
-            console.log('scrum details to udpate ',scrum, ' associate being added : ',associate);
+            console.log('scrum details to udpate ', scrum, ' associate being added : ', associate);
 
-            //make server call
+            var associateId = SharedService.getAssociateId();
+            //URI POST call to update the scrum details of the project
+            var promise = addScrumService.updateScrum(scrum, associate, associateId);
+            promise.then(function (result) {
+                console.log('Updating Scrum Success, data retrieved :', result);
+
+                if (result.code === 500) {
+                    SharedService.showError(result.message);
+                    return;
+                }
+
+                if (result.code === 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    SharedService.showError(result.message);
+                    return;
+                }
+
+                //Show success message to the user
+                SharedService.showSuccess(result.message);
+
+                //clear the form
+                $scope.clearScrum();
+            })
+                .catch(function (resError) {
+                console.log('Update scrum failure :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
         }
     }
+
+    //search associates
+    $scope.search = function (searchText) {
+        console.log("searching for ", searchText);
+        var promise = addScrumService.searchAssociates(searchText);
+        promise.then(function (result) {
+                console.log('got the result from searching associates :', result);
+                $scope.filteredAssociates = result.response;
+            })
+            .catch(function (resError) {
+                console.log('search for associates failed :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
+    }
+
+    $element.find('input').on('keydown', function (ev) {
+        ev.stopPropagation();
+    });
+
+    //clear associate search
+    $scope.clearSearchTerm = function () {
+        $scope.searchTerm = '';
+    };
 
     //clear scrum form
     $scope.clearScrum = function () {
