@@ -13,8 +13,8 @@ angular.module('scrumApp.project', ['ui.router'])
     return factory;
 
     //Save a Project
-    function addProject(projectName, associateId) {
-        console.log('control in add project factory method : ', projectName, ' ', associateId);
+    function addProject(project, associateId) {
+        console.log('control in add project factory method : ', project, ' ', associateId);
         var deferred = $q.defer();
 
         $http({
@@ -26,13 +26,9 @@ angular.module('scrumApp.project', ['ui.router'])
 
             transformRequest: function (data) {
                 var formData = new FormData();
-                formData.append("projectName", projectName);
+                formData.append("project", angular.toJson(project));
                 formData.append("associateId", associateId);
                 return formData;
-            },
-            data: {
-                model: projectName,
-                associateId: associateId
             }
         }).
         success(function (data, status, headers, config) {
@@ -71,13 +67,37 @@ angular.module('scrumApp.project', ['ui.router'])
         return;
     }
 
+    $scope.isProjectActive = true;
+    $scope.projectStatus = 'Active Project';
+    $scope.changeProjectStatus = function(status) {
+        console.log('is project active :'+!status);
+        if(!status) {
+            $scope.projectStatus = 'Active Project';
+        } else {
+            $scope.projectStatus = 'InActive/No-Scrum Project';
+        }
+    }
+
     //save project name
     $scope.saveProject = function (projectName) {
         console.log('Name of the new project is ' + projectName);
 
+        var dateCreated = $filter('date')(new Date(), 'd MMM, yyyy');
+        var projectStatus;
+        if($scope.isProjectActive) {
+            projectStatus = 'active';
+        } else {
+            projectStatus = 'inactive';
+        }
+
         //URI POST call to save the project
         if (projectName !== '' || projectName != null) {
-            var promise = projectService.addProject(projectName, SharedService.getAssociateId());
+            var project = {};
+            project.projectName = projectName;
+            project.projectStatus = projectStatus;
+            project.dateCreated = dateCreated;
+
+            var promise = projectService.addProject(project, SharedService.getAssociateId());
             promise.then(function (result) {
                     console.log('Project added successfully :', result);
                     //Show success message to the user

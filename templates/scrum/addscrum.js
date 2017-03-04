@@ -278,6 +278,11 @@ angular.module('scrumApp.addScrum', ['ui.router'])
             promise.then(function (result) {
                 console.log('Updating Scrum Success, data retrieved :', result);
 
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+
                 if (result.code === 500) {
                     SharedService.showError(result.message);
                     return;
