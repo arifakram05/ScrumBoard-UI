@@ -1,22 +1,55 @@
 <div class="modal-body">
     <md-toolbar class="md-primary">
         <div class="md-toolbar-tools">
-            <h2 class="md-flex">Your Info</h2>
+            <h2 class="md-flex">View Associate Info</h2>
         </div>
     </md-toolbar>
+    <md-content>
+        <md-tabs md-dynamic-height md-border-bottom>
+            <md-tab label="You">
+                <md-content class="md-padding md-no-momentum">
+                    <div layout="column" ng-style="{'padding-left':'30px', 'padding-top':'30px'}" flex="">
+                        <p><b>Name</b> : <span ng-bind="associateName"></span></p>
+                        <p><b>Id</b> : <span ng-bind="associateId"></span></p>
+                        <p><b>Title</b> : <span ng-bind="title"></span></p>
+                        <p><b>Projects</b> : <span ng-bind="assignedProjects"></span></p>
+                    </div>
 
-    <md-content class="md-no-momentum">
+                    <div layout="row" layout-align="center" flex>
+                        <md-button class="md-raised md-default" ng-click="closeUserDetailsModal()">close</md-button>
+                    </div>
+                </md-content>
+            </md-tab>
+            <md-tab label="Others">
+                <md-content class="md-padding md-no-momentum">
 
-        <div layout="column" ng-style="{'padding-left':'30px', 'padding-top':'30px'}" flex="">
-            <p>Name : <b><span ng-bind="associateName"></span></b></p>
-            <p>Id: <b><span ng-bind="associateId"></span></b></p>
-            <p>Title: <b><span ng-bind="title"></span></b></p>
-            <p>Projects: <b><span ng-bind="assignedProjects | json"></span></b></p>
-        </div>
+                    <p ng-style="{'padding-left':'30px', 'padding-top':'10px'}" ng-if="!selectedAssociate">Please search for an associate and pick one from the list</p>
 
-        <div layout="row" layout-align="center" flex>
-            <md-button class="md-raised md-default" ng-click="closeUserDetailsModal()">close</md-button>
-        </div>
+                    <div layout="row" layout-align="center" ng-style="{'padding-left':'20px', 'padding-top':'10px'}" flex="">
+                        <md-input-container flex="50" md-no-float class="md-block">
+                            <input ng-model="searchTerm" ng-change="search(searchTerm)" type="search" placeholder="Search ID or Name of the assoicate...">
+                        </md-input-container>
 
+                        <md-input-container flex="5"></md-input-container>
+
+                        <md-input-container flex="50">
+                            <select class="selectBox" ng-model="selectedAssociate" ng-options="assc.associateName for assc in filteredAssociates">
+                            </select>
+                        </md-input-container>
+                    </div>
+
+                    <div ng-if="selectedAssociate" layout="column" ng-style="{'padding-left':'30px', 'padding-top':'10px'}" flex="">
+                        <p><b>Name</b> : <span ng-bind="selectedAssociate.associateName"></span></p>
+                        <p><b>Id</b> : <span ng-bind="selectedAssociate.associateId"></span></p>
+                        <p><b>Title</b> : <span ng-bind="selectedAssociate.title"></span></p>
+                        <p><b>Projects</b> : <span ng-repeat="project in  selectedAssociate.projects" ng-bind="project.projectName + ' ' "></span></p>
+                    </div>
+
+                    <div layout="row" layout-align="center" flex>
+                        <md-button class="md-raised md-default" ng-click="closeUserDetailsModal()">close</md-button>
+                    </div>
+                </md-content>
+            </md-tab>
+        </md-tabs>
     </md-content>
 </div>
