@@ -16,14 +16,12 @@ angular.module('scrumApp.addScrum', ['ui.router'])
     var ADD_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrum/';
     var UPDATE_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/updateScrum/';
     var GET_RECENT_SCRUM_RECORD = 'http://127.0.0.1:8080/ScrumBoard/services/latestScrum?';
-    var SEARCH_ASSOCIATES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/searchAssociate?';
 
     //define all factory methods
     var factory = {
         addScrum: addScrum,
         updateScrum: updateScrum,
-        getRecentScrumRecord: getRecentScrumRecord,
-        searchAssociates: searchAssociates
+        getRecentScrumRecord: getRecentScrumRecord
     };
 
     return factory;
@@ -114,30 +112,6 @@ angular.module('scrumApp.addScrum', ['ui.router'])
                     deferred.reject(errResponse);
                 }
             );
-        return deferred.promise;
-    }
-
-    function searchAssociates(searchText) {
-        console.log('search string : ', searchText);
-
-        var deferred = $q.defer();
-        $http({
-            method: 'GET',
-            url: SEARCH_ASSOCIATES_URI,
-            params: {
-                associate: searchText
-            }
-        })
-            .then(
-            function success(response) {
-                console.log('associates retrieved per search criteria: ', response);
-                deferred.resolve(response.data);
-            },
-            function error(errResponse) {
-                console.error('Error while making service call to search for associates ', errResponse);
-                deferred.reject(errResponse);
-            }
-        );
         return deferred.promise;
     }
 
@@ -311,8 +285,7 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
     //search associates
     $scope.search = function (searchText) {
-        console.log("searching for ", searchText);
-        var promise = addScrumService.searchAssociates(searchText);
+        var promise = SharedService.searchAssociates(searchText);
         promise.then(function (result) {
                 console.log('got the result from searching associates :', result);
                 $scope.filteredAssociates = result.response;

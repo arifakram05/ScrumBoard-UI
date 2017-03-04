@@ -3,6 +3,7 @@ angular.module('scrumApp.shared', ['ui.router'])
 .service('SharedService', ['$state', 'growl', '$http', '$q', '$window', function ($state, growl, $http, $q, $window) {
 
     var GET_ALL_PROJECTS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projects/';
+    var SEARCH_ASSOCIATES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/searchAssociate?';
 
     this.associateDetails = {};
     this.authToken = '';
@@ -34,7 +35,8 @@ angular.module('scrumApp.shared', ['ui.router'])
         logout: logout,
 
         //service calls
-        getAllProjects: getAllProjects
+        getAllProjects: getAllProjects,
+        searchAssociates: searchAssociates
     };
 
     return service;
@@ -176,6 +178,28 @@ angular.module('scrumApp.shared', ['ui.router'])
                     deferred.reject(errResponse);
                 }
             );
+        return deferred.promise;
+    }
+
+    function searchAssociates(searchText) {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: SEARCH_ASSOCIATES_URI,
+            params: {
+                associate: searchText
+            }
+        })
+            .then(
+            function success(response) {
+                console.log('associates retrieved per search criteria: ', response);
+                deferred.resolve(response.data);
+            },
+            function error(errResponse) {
+                console.error('Error while making service call to search for associates ', errResponse);
+                deferred.reject(errResponse);
+            }
+        );
         return deferred.promise;
     }
 
