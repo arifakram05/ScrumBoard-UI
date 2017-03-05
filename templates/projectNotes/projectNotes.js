@@ -186,14 +186,6 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         });
     }*/
 
-    //show selected notes
-    $scope.showNotes = function (note) {
-        //$scope.canShowDetailNotes = true;
-        $scope.isUserCreatingNewNote = false;
-        $scope.detailedProjectNote = note.notes
-        $scope.noteTitle = note.title;
-    }
-
     /*New Project Related Script*/
 
     //show text editor
@@ -262,6 +254,24 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
     //cancel working on a new notes
     $scope.cancelNewNote = function () {
         $scope.isUserCreatingNewNote = false;
+    }
+
+    // when selected a project
+    $scope.selPrjToShow = undefined;
+    $scope.selectProject = function(project) {
+        $scope.selectedProjectForNotes = project;
+        $scope.selPrjToShow = project.projectName;
+    }
+
+    //when selected a notes
+    $scope.selNotesToShow = undefined;
+    //show selected notes
+    $scope.showNotes = function (note) {
+        $scope.selNotesToShow = note;
+        //$scope.canShowDetailNotes = true;
+        $scope.isUserCreatingNewNote = false;
+        $scope.detailedProjectNote = note.notes
+        $scope.noteTitle = note.title;
     }
 
     //alerts to user

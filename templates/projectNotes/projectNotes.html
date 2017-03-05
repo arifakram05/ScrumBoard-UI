@@ -1,62 +1,83 @@
 <div layout="column" ng-cloak>
     <div ng-controller="projectNotesCtrl as ctrl">
         <md-content layout-padding>
-
-            <div layout="row" layout-align="center center">
-                <md-input-container flex="50" md-no-float class="md-block">
-                    <label>Select a Project</label>
-                    <md-select ng-model="selectedProjectForNotes" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
-                        <md-select-header class="demo-select-header">
-                            <input ng-model="searchTerm" type="search" placeholder="Search for a project..." class="demo-header-searchbox md-text">
-                        </md-select-header>
-                        <md-optgroup>
-                            <md-option ng-value="project" ng-repeat="project in projects |
-                                                                     filter:searchTerm">{{project.projectName}}</md-option>
-                        </md-optgroup>
-                    </md-select>
-                </md-input-container>
-
-                <md-button class="md-raised md-primary" ng-if="isUserCreatingNewNote === false && allProjectNotes" ng-click="addNewNotes()">New Note</md-button>
-                <md-button class="md-raised md-primary" ng-if="isUserCreatingNewNote === true" ng-click="saveNewNote(ctrl.newProjectNoteContent, ctrl.newProjectNoteTitle)">Save</md-button>
-                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="cancelNewNote()">Cancel</md-button>
-            </div>
-
-
             <div layout="row">
-
-                <md-content ng-if="allProjectNotes !=  null" ng-style="{'float':'left', 'width':'25%', 'height':'750px'}">
-                    <md-list>
-                        <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
-                            <input ng-model="notes_search" id="notes_search" placeholder="Search Notes">
-                        </md-input-container>
-
-                        <md-list-item class="md-2-line" ng-repeat="note in allProjectNotes | filter : notes_search">
-                            <div class="md-list-item-text">
-                                <h3 class="hand" ng-click="showNotes(note)">{{note.title}}</h3>
-                                <p>{{note.author}}</p>
-                            </div>
+                <div layout="column" layout-align="start" ng-style="{'float':'left', 'width':'20%'}">
+                    <md-toolbar class="md-theme-indigo">
+                        <h1 class="md-toolbar-tools">Projects</h1>
+                    </md-toolbar>
+                    <md-content layout-padding="" ng-style="{'background-color':'#fff'}">
+                        <md-list>
+                            <md-subheader class="md-no-sticky">
+                                <input name="searchTerm" ng-model="searchTerm" placeholder="Search Projects">
+                            </md-subheader>
                             <md-divider></md-divider>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-
-
-                <md-input-container flex="5"></md-input-container>
-
-                <!--Selected Project Note Details-->
-                <div layout="column" class="projectNotesDisplayArea" ng-if="isUserCreatingNewNote === false">
-                    <h3>{{noteTitle}}</h3>
-                    <div ng-bind-html="detailedProjectNote">
-                    </div>
+                            <md-list-item ng-repeat="project in projects | filter: searchTerm" ng-click="selectProject(project)" ng-class="{selected : project.projectName === selPrjToShow}">
+                                <p> {{ project.projectName }} </p>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
                 </div>
 
-                <!--New Project Note Creation-->
-                <div layout="column" ng-if="isUserCreatingNewNote === true" class="projectNotesDisplayArea">
-                    <h3 ng-style="{'margin-bottom':'10px'}">Working on adding a new note to the project - <span class="newNoteHeader">{{selectedProjectForNotes.projectName}}</span></h3>
-                    <div ng-style="{'margin-bottom':'10px'}">
-                        <input name="noteTitle" class="form-control" ng-model="ctrl.newProjectNoteTitle" placeholder="Name or short description for your notes" required>
+                <md-input-container flex="1"></md-input-container>
+
+                <div layout="column" layout-align="start" ng-style="{'float':'left', 'width':'20%'}" ng-if="selectedProjectForNotes">
+                    <md-toolbar class="md-hue-3">
+                        <h1 class="md-toolbar-tools">Notes</h1>
+                    </md-toolbar>
+                    <md-content layout-padding="" ng-style="{'background-color':'#fff'}">
+                        <md-list>
+                            <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
+                                <input ng-model="searchTermNotes" id="searchTermNotes" placeholder="Search Notes">
+                            </md-input-container>
+
+                            <md-divider></md-divider>
+
+                            <md-list-item class="md-2-line" ng-repeat="note in allProjectNotes | filter: searchTermNotes" ng-click="showNotes(note)" ng-class="{selected : note === selNotesToShow}">
+                                <div class="md-list-item-text">
+                                    <h3> {{ note.title }} </h3>
+                                </div>
+                                <md-divider></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
+                </div>
+
+                <md-input-container flex="1"></md-input-container>
+
+                <div layout="column" ng-style="{'width':'100%'}">
+                    <md-toolbar class="md-primary">
+                        <div class="md-toolbar-tools">
+                            <h2 class="md-flex" ng-if="selPrjToShow">{{selPrjToShow}}</h2>
+                            <h2 class="md-flex" ng-if="!selPrjToShow">Select a Project</h2>
+                            <div layout="row" layout-align="end" flex>
+                                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === false && allProjectNotes" ng-click="addNewNotes()">New Note</md-button>
+                                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="saveNewNote(ctrl.newProjectNoteContent, ctrl.newProjectNoteTitle)">Save</md-button>
+                                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="cancelNewNote()">Cancel</md-button>
+                            </div>
+                        </div>
+                    </md-toolbar>
+
+                    <div ng-style="{'width':'100%'}">
+
+                        <!--Selected Project Note Details-->
+                        <div layout="column" class="projectNotesDisplayArea" ng-if="isUserCreatingNewNote === false">
+                            <h3 ng-style="{'text-align':'center'}">{{noteTitle}}</h3>
+                            <br/>
+                            <div ng-bind-html="detailedProjectNote">
+                            </div>
+                        </div>
+
+                        <!--New Project Note Creation-->
+                        <div layout="column" ng-if="isUserCreatingNewNote === true" class="projectNotesDisplayArea">
+                            <div ng-style="{'margin-bottom':'10px'}">
+                                <input name="noteTitle" class="form-control" ng-model="ctrl.newProjectNoteTitle" placeholder="Name or short description for your notes" required>
+                            </div>
+                            <div class="text-editor-panel" text-angular="text-angular" name="ctrl.newProjectNoteContent" ng-model="ctrl.newProjectNoteContent"></div>
+                        </div>
                     </div>
-                    <div class="text-editor-panel" text-angular="text-angular" name="ctrl.newProjectNoteContent" ng-model="ctrl.newProjectNoteContent"></div>
+
                 </div>
 
             </div>
