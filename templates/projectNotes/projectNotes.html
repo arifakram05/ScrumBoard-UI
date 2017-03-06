@@ -16,6 +16,7 @@
                                 <p> {{ project.projectName }} </p>
                                 <md-divider></md-divider>
                             </md-list-item>
+                            <md-divider></md-divider>
                         </md-list>
                     </md-content>
                 </div>
@@ -28,18 +29,21 @@
                     </md-toolbar>
                     <md-content layout-padding="" ng-style="{'background-color':'#fff'}">
                         <md-list>
-                            <md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
+                            <!--<md-input-container flex="" ng-style="{'margin':'0', 'padding':'0'}" md-no-float class="md-block">
                                 <input ng-model="searchTermNotes" id="searchTermNotes" placeholder="Search Notes">
-                            </md-input-container>
-
+                            </md-input-container>-->
+                            <md-subheader class="md-no-sticky">
+                                <input ng-model="searchTermNotes" id="searchTermNotes" placeholder="Search Notes">
+                            </md-subheader>
                             <md-divider></md-divider>
-
                             <md-list-item class="md-2-line" ng-repeat="note in allProjectNotes | filter: searchTermNotes" ng-click="showNotes(note)" ng-class="{selected : note === selNotesToShow}">
                                 <div class="md-list-item-text">
                                     <h3> {{ note.title }} </h3>
+                                    <p>{{note.author}} - {{note.createdOn}}</p>
                                 </div>
                                 <md-divider></md-divider>
                             </md-list-item>
+                            <md-divider></md-divider>
                         </md-list>
                     </md-content>
                 </div>
@@ -55,6 +59,18 @@
                                 <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === false && allProjectNotes" ng-click="addNewNotes()">New Note</md-button>
                                 <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="saveNewNote(ctrl.newProjectNoteContent, ctrl.newProjectNoteTitle)">Save</md-button>
                                 <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="cancelNewNote()">Cancel</md-button>
+                                <!--<div ng-if="canShowEditButton === true">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" aria-label="edit">
+                                        <md-icon md-svg-src="img/edit.svg"></md-icon>
+                                        <md-tooltip>Edit Notes</md-tooltip>
+                                    </md-button>
+                                </div>-->
+                                <div ng-if="canShowDeleteButton === true">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="deleteNotes(selNotesToShow)" aria-label="delete">
+                                        <md-icon md-svg-src="img/delete.svg"></md-icon>
+                                        <md-tooltip>Delete Notes</md-tooltip>
+                                    </md-button>
+                                </div>
                             </div>
                         </div>
                     </md-toolbar>
