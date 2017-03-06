@@ -39,7 +39,7 @@
                             <md-list-item class="md-2-line" ng-repeat="note in allProjectNotes | filter: searchTermNotes" ng-click="showNotes(note)" ng-class="{selected : note === selNotesToShow}">
                                 <div class="md-list-item-text">
                                     <h3> {{ note.title }} </h3>
-                                    <p>{{note.author}} - {{note.createdOn}}</p>
+                                    <h6>{{note.author}} - {{note.createdOn}}</h6>
                                 </div>
                                 <md-divider></md-divider>
                             </md-list-item>
@@ -56,21 +56,47 @@
                             <h2 class="md-flex" ng-if="selPrjToShow">{{selPrjToShow}}</h2>
                             <h2 class="md-flex" ng-if="!selPrjToShow">Select a Project</h2>
                             <div layout="row" layout-align="end" flex>
-                                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === false && allProjectNotes" ng-click="addNewNotes()">New Note</md-button>
-                                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="saveNewNote(ctrl.newProjectNoteContent, ctrl.newProjectNoteTitle)">Save</md-button>
-                                <md-button class="md-raised md-default" ng-if="isUserCreatingNewNote === true" ng-click="cancelNewNote()">Cancel</md-button>
-                                <!--<div ng-if="canShowEditButton === true">
-                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" aria-label="edit">
+
+                                <div ng-if="isUserCreatingNewNote === false && allProjectNotes">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="addNewNotes()" aria-label="new">
+                                        <md-icon md-svg-src="img/new.svg"></md-icon>
+                                        <md-tooltip>New Notes</md-tooltip>
+                                    </md-button>
+                                </div>
+
+                                <div ng-if="isUserCreatingNewNote === true && isNotesBeingUpdated === false">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="saveNewNote(ctrl.newProjectNoteContent, ctrl.newProjectNoteTitle)" aria-label="save">
+                                        <md-icon md-svg-src="img/save.svg"></md-icon>
+                                        <md-tooltip>Save</md-tooltip>
+                                    </md-button>
+                                </div>
+
+                                <div ng-if="isUserCreatingNewNote">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="cancelNewNote()" aria-label="cancel">
+                                        <md-icon md-svg-src="img/cancel.svg"></md-icon>
+                                        <md-tooltip>Cancel</md-tooltip>
+                                    </md-button>
+                                </div>
+
+                                <div ng-if="isNotesBeingUpdated">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="updateNotes(projNotesToUpdate)" aria-label="update">
+                                        <md-icon md-svg-src="img/update.svg"></md-icon>
+                                        <md-tooltip>Update Notes</md-tooltip>
+                                    </md-button>
+                                </div>
+                                <div ng-if="canShowEditButton && canShowEditButtonFn(selPrjToShow) && isUserCreatingNewNote === false">
+                                    <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="editNotes(selNotesToShow)" aria-label="edit">
                                         <md-icon md-svg-src="img/edit.svg"></md-icon>
                                         <md-tooltip>Edit Notes</md-tooltip>
                                     </md-button>
-                                </div>-->
-                                <div ng-if="canShowDeleteButton === true">
+                                </div>
+                                <div ng-if="canShowDeleteButton && isUserCreatingNewNote === false">
                                     <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="deleteNotes(selNotesToShow)" aria-label="delete">
                                         <md-icon md-svg-src="img/delete.svg"></md-icon>
                                         <md-tooltip>Delete Notes</md-tooltip>
                                     </md-button>
                                 </div>
+
                             </div>
                         </div>
                     </md-toolbar>

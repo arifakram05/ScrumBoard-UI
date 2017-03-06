@@ -33,6 +33,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
     var GET_ALL_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projectNotes?';
     var SAVE_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projectNote';
     var DELETE_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/delete/projectNote';
+    var EDIT_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/update/projectNote';
     //test URL
     var TEST_SCRUM_URI = "templates/projectNotes/projectNotes.json";
 
@@ -40,7 +41,8 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
     var factory = {
         getAllNotesForProject: getAllNotesForProject,
         saveNewProjectNote: saveNewProjectNote,
-        deleteProjectNote: deleteProjectNote
+        deleteProjectNote: deleteProjectNote,
+        editProjectNote: editProjectNote
     };
 
     return factory;
@@ -130,6 +132,35 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
             });
         return deferred.promise;
     }
+
+    function editProjectNote(projectNotes, projectName, associateId) {
+        console.log('editing project notes');
+        var deferred = $q.defer();
+
+        $http({
+                method: 'POST',
+                url: EDIT_PROJECT_NOTES_URI,
+                headers: {
+                    'Content-Type': undefined
+                },
+
+                transformRequest: function (data) {
+                    var formData = new FormData();
+                    formData.append("projectNotes", angular.toJson(projectNotes));
+                    formData.append("projectName", projectName);
+                    formData.append("associateId", associateId);
+                    return formData;
+                }
+            })
+            .success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            })
+            .error(function (data, status, headers, config) {
+                console.log('ProjectNotes Edit Operation Failed ', status);
+                deferred.reject(data);
+            });
+        return deferred.promise;
+    }
 }])
 
 .controller('projectNotesCtrl', ['$scope', 'projectNotesService', '$filter', '$mdDialog', '$q', 'SharedService', '$state', '$element', function ($scope, projectNotesService, $filter, $mdDialog, $q, SharedService, $state, $element) {
@@ -199,7 +230,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         promise.then(function (result) {
             $scope.allProjectNotes = result.response;
             //show first notes in the notes list
-            if($scope.allProjectNotes != null && $scope.allProjectNotes.length > 0) {
+            if ($scope.allProjectNotes != null && $scope.allProjectNotes.length > 0) {
                 $scope.selNotesToShow = result.response[0];
                 $scope.showNotes(result.response[0]);
             }
@@ -223,16 +254,36 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
 
     /*New Project Related Script*/
 
+    $scope.canShowEditButtonFn = function (projectName) {
+        var isPrjEditable = false;
+        var assignedProjects = [];
+        assignedProjects = SharedService.getProjectNames();
+        assignedProjects.forEach(function (elem) {
+            if (elem === projectName) {
+                isPrjEditable = true;
+            }
+        });
+        return isPrjEditable;
+    }
+
     //show text editor
     $scope.addNewNotes = function () {
         $scope.isUserCreatingNewNote = true;
         $scope.canShowDeleteButton = false;
+        $scope.canShowEditButton = false;
+        //clear existing data in the text editor
+        $scope.ctrl.newProjectNoteTitle = null;
+        $scope.ctrl.newProjectNoteContent = null;
+        $scope.isNotesBeingUpdated = false;
     }
 
     //cancel working on a new notes
     $scope.cancelNewNote = function () {
         $scope.isUserCreatingNewNote = false;
         $scope.canShowDeleteButton = true;
+        $scope.canShowEditButton = true;
+        $scope.projNotesToUpdate = undefined;
+        $scope.isNotesBeingUpdated = false;
     }
 
     //save a new note
@@ -294,6 +345,8 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
     }
 
     $scope.canShowDeleteButton = false;
+    $scope.canShowEditButton = false;
+    $scope.isNotesBeingUpdated = false;
 
     // when selected a project
     $scope.selPrjToShow = undefined;
@@ -301,6 +354,8 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         $scope.selectedProjectForNotes = project;
         $scope.selPrjToShow = project.projectName;
         $scope.canShowDeleteButton = false;
+        $scope.canShowEditButton = false;
+        $scope.isNotesBeingUpdated = false;
     }
 
     //when selected a notes
@@ -313,6 +368,8 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
         $scope.detailedProjectNote = note.notes;
         $scope.noteTitle = note.title;
         $scope.canShowDeleteButton = true;
+        $scope.canShowEditButton = true;
+        $scope.isNotesBeingUpdated = false;
     }
 
     //delete notes
@@ -350,11 +407,78 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
                 $scope.showNotes(projectNotes);
 
                 $scope.canShowDeleteButton = false;
+                $scope.canShowEditButton = false;
                 $scope.detailedProjectNote = undefined;
                 $scope.noteTitle = undefined;
+                $scope.isNotesBeingUpdated = false;
             })
             .catch(function (resError) {
                 console.log('Delete Project Notes failure :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
+    }
+
+    $scope.projNotesToUpdate = undefined;
+
+    $scope.editNotes = function (projectNotes) {
+        $scope.isUserCreatingNewNote = true;
+        $scope.ctrl.newProjectNoteTitle = projectNotes.title;
+        $scope.ctrl.newProjectNoteContent = projectNotes.notes;
+        $scope.isNotesBeingUpdated = true;
+        $scope.projNotesToUpdate = projectNotes;
+    }
+
+    $scope.updateNotes = function (projectNotes) {
+
+        var associateId = SharedService.getAssociateId();
+
+        projectNotes._id = projectNotes._id.$oid;
+        projectNotes.title = $scope.ctrl.newProjectNoteTitle;
+        projectNotes.notes = $scope.ctrl.newProjectNoteContent;
+        projectNotes.lastUpdatedOn = $filter('date')(new Date(), 'd MMM, yyyy');
+        projectNotes.editors = [associateId];
+
+        console.log('details of the note to edit : ', projectNotes);
+
+        //URI POST call to delete the new notes
+        var promise = projectNotesService.editProjectNote(projectNotes, $scope.selectedProjectForNotes.projectName, associateId);
+        promise.then(function (result) {
+                console.log('Edit Project Notes Success :', result);
+
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                    return;
+                }
+
+                if (result.code === 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    SharedService.showError(result.message);
+                    return;
+                }
+
+                //Show success message to the user
+                SharedService.showSuccess(result.message);
+
+                //call to get all notes for selected project to refresh notes list
+                getProjectNotesForSelected($scope.selectedProjectForNotes.projectName);
+                $scope.showNotes(projectNotes);
+
+                $scope.canShowDeleteButton = false;
+                $scope.canShowEditButton = false;
+                $scope.detailedProjectNote = undefined;
+                $scope.noteTitle = undefined;
+                $scope.projNotesToUpdate = undefined;
+                $scope.isNotesBeingUpdated = false;
+            })
+            .catch(function (resError) {
+                console.log('Edit Project Notes failure :: ', resError);
                 //show failure message to the user
                 SharedService.showError(resError.message);
             });
