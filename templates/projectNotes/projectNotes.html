@@ -57,7 +57,7 @@
                             <h2 class="md-flex" ng-if="!selPrjToShow">Select a Project</h2>
                             <div layout="row" layout-align="end" flex>
 
-                                <div ng-if="isUserCreatingNewNote === false && allProjectNotes">
+                                <div ng-if="isUserCreatingNewNote === false && allProjectNotes && canShowButtonsFn(selPrjToShow)">
                                     <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="addNewNotes()" aria-label="new">
                                         <md-icon md-svg-src="img/new.svg"></md-icon>
                                         <md-tooltip>New Notes</md-tooltip>
@@ -84,13 +84,13 @@
                                         <md-tooltip>Update Notes</md-tooltip>
                                     </md-button>
                                 </div>
-                                <div ng-if="canShowEditButton && canShowEditButtonFn(selPrjToShow) && isUserCreatingNewNote === false">
+                                <div ng-if="canShowEditButton && canShowButtonsFn(selPrjToShow) && isUserCreatingNewNote === false">
                                     <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="editNotes(selNotesToShow)" aria-label="edit">
                                         <md-icon md-svg-src="img/edit.svg"></md-icon>
                                         <md-tooltip>Edit Notes</md-tooltip>
                                     </md-button>
                                 </div>
-                                <div ng-if="canShowDeleteButton && isUserCreatingNewNote === false">
+                                <div ng-if="canShowDeleteButton && canShowButtonsFn(selPrjToShow) && isUserCreatingNewNote === false">
                                     <md-button class="md-fab md-mini" ng-style="{'background-color':'#fff'}" ng-click="deleteNotes(selNotesToShow)" aria-label="delete">
                                         <md-icon md-svg-src="img/delete.svg"></md-icon>
                                         <md-tooltip>Delete Notes</md-tooltip>

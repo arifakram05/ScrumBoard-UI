@@ -254,7 +254,7 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
 
     /*New Project Related Script*/
 
-    $scope.canShowEditButtonFn = function (projectName) {
+    $scope.canShowButtonsFn = function (projectName) {
         var isPrjEditable = false;
         var assignedProjects = [];
         assignedProjects = SharedService.getProjectNames();
