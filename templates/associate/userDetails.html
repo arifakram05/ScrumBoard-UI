@@ -11,6 +11,7 @@
                     <div layout="column" ng-style="{'padding-left':'30px', 'padding-top':'30px'}" flex="">
                         <p><b>Name</b> : <span ng-bind="associateName"></span></p>
                         <p><b>Id</b> : <span ng-bind="associateId"></span></p>
+                        <p><b>Email</b> : <span ng-bind="emailId"></span></p>
                         <p><b>Title</b> : <span ng-bind="title"></span></p>
                         <p><b>Projects</b> : <span ng-bind="assignedProjects"></span></p>
                     </div>
@@ -41,6 +42,7 @@
                     <div ng-if="selectedAssociate" layout="column" ng-style="{'padding-left':'30px', 'padding-top':'10px'}" flex="">
                         <p><b>Name</b> : <span ng-bind="selectedAssociate.associateName"></span></p>
                         <p><b>Id</b> : <span ng-bind="selectedAssociate.associateId"></span></p>
+                        <p><b>Email</b> : <span ng-bind="selectedAssociate.emailId"></span></p>
                         <p><b>Title</b> : <span ng-bind="selectedAssociate.title"></span></p>
                         <p><b>Projects</b> : <span ng-repeat="project in  selectedAssociate.projects" ng-bind="project.projectName + ' ' "></span></p>
                     </div>

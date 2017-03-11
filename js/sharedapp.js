@@ -19,6 +19,7 @@ angular.module('scrumApp.shared', ['ui.router'])
         getAssociateId: getAssociateId,
         getUserRole: getUserRole,
         getUserTitle: getUserTitle,
+        getAssociateEmail: getAssociateEmail,
         getAssignedProjects: getAssignedProjects,
         getProjectNames: getProjectNames,
 
@@ -79,6 +80,10 @@ angular.module('scrumApp.shared', ['ui.router'])
 
     function getUserTitle() {
         return this.associateDetails.title;
+    }
+
+    function getAssociateEmail() {
+        return this.associateDetails.emailId;
     }
 
     function getAssignedProjects() {

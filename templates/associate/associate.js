@@ -171,7 +171,7 @@ angular.module('scrumApp.associate', ['ui.router'])
     $scope.titles = ["Team Lead", "Scrum Master", "Team Member"];
 
     $scope.canShowSaveButton = function (associate) {
-        if (associate.associateId && associate.associateName) {
+        if (associate.associateId && associate.associateName && associate.emailId) {
             return true;
         } else {
             return false;
