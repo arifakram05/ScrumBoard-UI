@@ -221,6 +221,12 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
 
     //responsible for updating user password
     $scope.updatePwd = function (associate) {
+
+        if (associate.associateId === associate.password) {
+            notifyUser('Your Password cannot be same as your ID');
+            return;
+        }
+
         console.log('Updating for .... ', associate);
 
         var promise = loginService.updatePassword(associate);
@@ -255,6 +261,12 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
     $scope.register = function (associate) {
         console.log('user to be registerd is ', associate);
         if ($scope.registerForm.$valid) {
+
+            if (associate.associateId === associate.password) {
+                notifyUser('Your Password cannot be same as your ID');
+                return;
+            }
+
             if (associate.password !== associate.confirmedPassword) {
                 notifyUser('Passwords do not match. Please verify and re-submit.');
                 return;
