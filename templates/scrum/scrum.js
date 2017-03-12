@@ -228,10 +228,12 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     //monitor date selected and fetch scrum details
     $scope.$watch('view_sd_rawSelectedDate', function (view_sd_rawSelectedDate) {
         console.log('Is refined search on : ', $scope.view_sd_searchByProject);
+        $scope.view_sd_selectedDate = $filter('date')($scope.view_sd_rawSelectedDate, 'd MMM, yyyy');
+
         if ($scope.view_sd_searchByProject) {
             console.log('when refined results is in place, cannot call server upon only date selection');
+            $scope.view_sd_refineProjectSearch($scope.ctrl.view_sd_selectedProjectName.projectName, $scope.view_sd_selectedDate);
         } else {
-            $scope.view_sd_selectedDate = $filter('date')($scope.view_sd_rawSelectedDate, 'd MMM, yyyy');
             console.log('watching....value received : selectedDate', $scope.view_sd_selectedDate);
             //if form valid, then make a server call
             if ($scope.view_sd_selectedDate) {
@@ -267,7 +269,7 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
     $scope.view_sd_refineProjectSearch = function (projectName, rawSelectedDate) {
 
         if (projectName && rawSelectedDate) {
-            $scope.view_sd_selectedDate = $filter('date')(rawSelectedDate, 'd MMM, yyyy');
+            //$scope.view_sd_selectedDate = $filter('date')(rawSelectedDate, 'd MMM, yyyy');
             console.log('fetching refined results for ', projectName, ' ', $scope.view_sd_selectedDate);
 
             //Make call to server
