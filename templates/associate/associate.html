@@ -23,7 +23,7 @@
                                         <md-option ng-value="assc" ng-repeat="assc in filteredAssociates | filter:asscSearchTerm">{{assc.associateName}}</md-option>
                                     </md-optgroup>
                                 </md-select>
-                            </md-input-container><!--ng-change="search(asscSearchTerm)"-->
+                            </md-input-container>
 
                             <md-input-container flex="5" md-no-float class="md-block">
                             </md-input-container>
@@ -138,9 +138,26 @@
                     </div>
                 </md-toolbar>
                 <md-content class="md-no-momentum">
-                    <div layout="column" flex="">
+                    <form name="addAssociateToPrjsForm">
+                        <div layout="row" layout-align="center center">
+                            <md-input-container flex="50" md-no-float class="md-block">
+                                <label>Associate ID or Name</label>
+                                <md-select ng-model="selectedAsscForReset" md-on-close="clearAsscSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="asscSearchTerm" ng-keydown="onSearchChange($event)" ng-change="search(asscSearchTerm)" type="search" placeholder="Search ID or Name of the associate..." class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup>
+                                        <md-option ng-value="assc" ng-repeat="assc in filteredAssociates | filter:asscSearchTerm">{{assc.associateName}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
 
-                    </div>
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
+
+                            <md-button class="md-raised md-primary" ng-style="{'height':'20px'}" ng-disabled="!selectedAsscForReset" ng-click="resetPassword()">Reset</md-button>
+                        </div>
+                    </form>
                 </md-content>
             </md-tab>
         </md-tabs>

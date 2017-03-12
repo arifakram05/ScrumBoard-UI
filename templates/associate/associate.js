@@ -270,6 +270,48 @@ angular.module('scrumApp.associate', ['ui.router'])
         }
     }
 
+    //reset password functionality
+    $scope.resetPassword = function () {
+        var associate = {
+            projects: []
+        };
+        associate.associateId = $scope.selectedAsscForReset.associateId;
+        associate.password = "reset";
+        //URI POST call to add projects to associate
+        var promise = associateService.addAssociate(associate, loggedInAssociateId);
+        promise.then(function (result) {
+                console.log('associate details recorded for reset :', result);
+
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                    return;
+                }
+
+                if (result.code === 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    SharedService.showError(result.message);
+                    return;
+                }
+
+                //Show success message to the user
+                SharedService.showSuccess(result.message);
+
+                //clear
+                $scope.selectedAsscForReset = undefined;
+            })
+            .catch(function (resError) {
+                console.log('Assign projects to associate failure :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
+    }
+
     //alerts to user
     function notifyUser(message) {
         $mdDialog.show(
