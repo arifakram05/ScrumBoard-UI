@@ -306,6 +306,11 @@ angular.module('scrumApp.addScrum', ['ui.router'])
         $scope.searchTerm = '';
     };
 
+    //clear project search
+    $scope.clearPrjSearchTerm = function () {
+        $scope.prjSearchTerm = '';
+    };
+
     //clear scrum form
     $scope.clearScrum = function () {
         console.log('clearing all form details');

@@ -309,6 +309,15 @@ angular.module('scrumApp.scrum', ['ui.router', 'scrumApp.shared'])
         }
     }
 
+    //clear project search
+    $scope.clearSearchTerm = function () {
+        $scope.searchTerm = '';
+    };
+
+    $scope.onSearchChange = function ($event) {
+        $event.stopPropagation();
+    }
+
     //alerts to user
     function notifyUser(message) {
         $mdDialog.show(

@@ -9,24 +9,24 @@
                     </form>
 
                     <form name="view_sd_refinedSearchForm">
-                        <div layout="column" layout-align="center" ng-if="view_sd_searchByProject">
-                            <md-input-container flex="" md-no-float class="md-block">
-                                <input name="view_sd_projectName_label" ng-model="view_sd_searchProject" placeholder="Project Name">
-                            </md-input-container>
-
-                            <md-input-container flex="">
-                                <label>Projects</label>
-                                <md-select name="view_sd_projectName_combo" ng-model="ctrl.view_sd_selectedProjectName" required>
-                                    <md-option ng-value="project" ng-repeat="project in projects | filter: view_sd_searchProject">{{ project.projectName }}</md-option>
-                                </md-select>
-                            </md-input-container>
-                        </div>
-
                         <div layout="row" layout-align="center">
                             <md-switch ng-model="view_sd_searchByProject" ng-disabled="isRefinedSearchEnabled" ng-click="fetchAllProjects()" flex="100">
                                 <p>Refine</p>
                             </md-switch>
                         </div>
+
+                        <md-input-container flex="50" md-no-float class="md-block" ng-if="view_sd_searchByProject">
+                            <label>Project(s)</label>
+                            <md-select ng-model="ctrl.view_sd_selectedProjectName" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="searchTerm" ng-keydown="onSearchChange($event)" type="search" placeholder="Search for a project..." class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup>
+                                    <md-option ng-value="project" ng-repeat="project in projects |
+                                                                             filter:searchTerm">{{project.projectName}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
 
                         <div layout="row" ng-if="view_sd_searchByProject" layout-align="center">
                             <md-button ng-click="view_sd_refineProjectSearch(ctrl.view_sd_selectedProjectName.projectName, view_sd_rawSelectedDate)" class="md-raised md-primary" ng-style="{'height':'20px'}">Submit</md-button>

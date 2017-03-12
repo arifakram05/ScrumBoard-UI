@@ -42,13 +42,16 @@
                         </md-input-container>
 
                         <md-input-container flex="50" md-no-float class="md-block">
-                            <md-select name="project" ng-model="selectedProject" required placeholder="Project">
-                                <md-option ng-value="project" ng-repeat="project in projects">{{ project.projectName }}</md-option>
+                            <label>Project(s)</label>
+                            <md-select ng-model="selectedProject" md-on-close="clearPrjSearchTerm()" data-md-container-class="selectdemoSelectHeader" required>
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="prjSearchTerm" ng-change="onSearchChange($event)" type="search" placeholder="Search for a project..." class="demo-header-searchbox md-text">
+                                </md-select-header>
+                                <md-optgroup>
+                                    <md-option ng-value="project" ng-repeat="project in projects |
+                                                                             filter:prjSearchTerm">{{project.projectName}}</md-option>
+                                </md-optgroup>
                             </md-select>
-                            <!--<input type="hidden" ng-bind="scrum.projectName = selectedProject.projectName" />-->
-                            <div class="errors" ng-messages="addScrumForm.project.$error">
-                                <div ng-message="required">Required</div>
-                            </div>
                         </md-input-container>
                     </div>
 
