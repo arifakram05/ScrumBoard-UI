@@ -29,6 +29,9 @@ angular.module('scrumApp.associate', ['ui.router'])
         $http({
                 method: 'POST',
                 url: ADD_ASSOCIATE_URI,
+                params: {
+                    isRegistration: false
+                },
                 headers: {
                     'Content-Type': undefined
                 },
@@ -83,6 +86,7 @@ angular.module('scrumApp.associate', ['ui.router'])
     };
 
     $scope.searchTerm;
+    $scope.asscSearchTerm;
 
     var loggedInAssociateId = SharedService.getAssociateId();
 
@@ -102,9 +106,24 @@ angular.module('scrumApp.associate', ['ui.router'])
             });
     }
 
-    $element.find('input').on('keydown', function (ev) {
-        ev.stopPropagation();
-    });
+    //search associates
+    $scope.search = function (searchText) {
+        var promise = SharedService.searchAssociates(searchText);
+        promise.then(function (result) {
+                console.log('got the result from searching associates :', result);
+                $scope.filteredAssociates = result.response;
+            })
+            .catch(function (resError) {
+                console.log('search for associates failed :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
+    }
+
+    //this is the fix for having dynamic search inside tabs
+    $scope.onSearchChange = function ($event) {
+        $event.stopPropagation();
+    }
 
     //save associate name
     $scope.saveAssociate = function (associate) {
@@ -152,9 +171,63 @@ angular.module('scrumApp.associate', ['ui.router'])
             });
     }
 
+    //assign projects to associate
+    $scope.assignProjects = function (associate) {
+
+        if (associate.title === 'Scrum Master' && $scope.userRole !== 'admin') {
+            notifyUser('You do not have privileges to make an associate Scrum Master');
+            return;
+        }
+
+        associate.associateId = $scope.selectedAsscForUpdate.associateId;
+        /*associate.associateName = $scope.selectedAsscForUpdate.associateName;
+        associate.emailId = $scope.selectedAsscForUpdate.emailId;*/
+
+        console.log('assigning prjs to associate, details: ', associate, $scope.selectedAsscForUpdate);
+
+        //URI POST call to add projects to associate
+        var promise = associateService.addAssociate(associate, loggedInAssociateId);
+        promise.then(function (result) {
+                console.log('Add associate Success, data retrieved :', result);
+
+                if (result.code === 404) {
+                    SharedService.showWarning(result.message);
+                    return;
+                }
+
+                if (result.code === 500) {
+                    SharedService.showError('Error occurred while processing your request. Please re-login and try the operation again');
+                    return;
+                }
+
+                if (result.code === 403) {
+                    SharedService.logout();
+                    SharedService.showLoginPage();
+                    SharedService.showError(result.message);
+                    return;
+                }
+
+                //Show success message to the user
+                SharedService.showSuccess(result.message);
+
+                //clear form
+                $scope.clearAssignPrjsForm();
+            })
+            .catch(function (resError) {
+                console.log('Assign projects to associate failure :: ', resError);
+                //show failure message to the user
+                SharedService.showError(resError.message);
+            });
+    }
+
     //clear project search
     $scope.clearSearchTerm = function () {
         $scope.searchTerm = '';
+    };
+
+    //clear associate search
+    $scope.clearAsscSearchTerm = function () {
+        $scope.asscSearchTerm = '';
     };
 
     //clear form
@@ -164,14 +237,33 @@ angular.module('scrumApp.associate', ['ui.router'])
             projects: []
         };
         $scope.project = undefined;
+        $scope.selectedAsscForUpdate = undefined;
         $scope.addAssociateForm.$setUntouched();
         $scope.addAssociateForm.$setPristine();
     };
+
+    //clear assign prjs form
+    $scope.clearAssignPrjsForm = function () {
+        $scope.selectedAsscForUpdate = undefined;
+        $scope.associate = {
+            projects: []
+        };
+        $scope.addAssociateToPrjsForm.$setUntouched();
+        $scope.addAssociateToPrjsForm.$setPristine();
+    }
 
     $scope.titles = ["Team Lead", "Scrum Master", "Team Member"];
 
     $scope.canShowSaveButton = function (associate) {
         if (associate.associateId && associate.associateName && associate.emailId) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    $scope.canShowSaveButtonForAssignPrjs = function (associate) {
+        if ($scope.selectedAsscForUpdate && (associate.title || associate.projects)) {
             return true;
         } else {
             return false;

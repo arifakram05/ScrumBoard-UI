@@ -1,68 +1,150 @@
 <div class="col-md-8 col-md-offset-2" ng-controller="associateCtrl">
     <md-content class="md-padding">
-        <md-toolbar class="md-primary">
-            <div class="md-toolbar-tools">
-                <h2 class="md-flex">Add/Update Associate</h2>
-            </div>
-        </md-toolbar>
+        <md-tabs md-dynamic-height md-border-bottom>
 
-        <md-content class="md-no-momentum">
-            <div layout="column" flex="">
-                <form name="addAssociateForm">
-                    <div layout="row">
-                        <md-input-container flex="50" md-no-float class="md-block">
-                            <input name="associateName" ng-model="associate.associateName" placeholder="Associate Name">
-                        </md-input-container>
-
-                        <md-input-container flex="5" md-no-float class="md-block">
-                        </md-input-container>
-
-                        <md-input-container flex="50" md-no-float class="md-block">
-                            <input name="associateId" ng-model="associate.associateId" placeholder="Associate Id">
-                        </md-input-container>
-
-                        <md-input-container flex="5" md-no-float class="md-block">
-                        </md-input-container>
-
-                        <md-input-container flex="50" md-no-float class="md-block">
-                            <input type="email" name="emailId" ng-model="associate.emailId" placeholder="Associate Email">
-                        </md-input-container>
+            <!--Tab One-->
+            <md-tab label="Assign Projects">
+                <md-toolbar class="md-primary">
+                    <div class="md-toolbar-tools">
+                        <h2 class="md-flex">Assign Projects to Associate</h2>
                     </div>
+                </md-toolbar>
+                <md-content class="md-no-momentum">
 
-                    <div layout="row">
-                        <md-input-container flex="50" md-no-float class="md-block">
-                            <md-select name="associateTitle" ng-model="associate.title" placeholder="Associate Title">
-                                <md-option ng-repeat="title in titles" ng-value="title">
-                                    {{title}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
+                    <form name="addAssociateToPrjsForm">
+                        <div layout="row">
+                            <md-input-container flex="50" md-no-float class="md-block">
+                                <label>Associate ID or Name</label>
+                                <md-select ng-model="selectedAsscForUpdate" md-on-close="clearAsscSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="asscSearchTerm" ng-keydown="onSearchChange($event)" ng-change="search(asscSearchTerm)" type="search" placeholder="Search ID or Name of the associate..." class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup>
+                                        <md-option ng-value="assc" ng-repeat="assc in filteredAssociates | filter:asscSearchTerm">{{assc.associateName}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container><!--ng-change="search(asscSearchTerm)"-->
 
-                        <md-input-container flex="5" md-no-float class="md-block">
-                        </md-input-container>
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
 
-                        <md-input-container flex="50" md-no-float class="md-block">
-                            <label>Project(s)</label>
-                            <md-select ng-model="associate.projects" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader" multiple="">
-                                <md-select-header class="demo-select-header">
-                                    <input ng-model="searchTerm" type="search" placeholder="Search for a project..." class="demo-header-searchbox md-text">
-                                </md-select-header>
-                                <md-optgroup>
-                                    <md-option ng-value="project" ng-repeat="project in projects |
-                                                                               filter:searchTerm">{{project.projectName}}</md-option>
-                                </md-optgroup>
-                            </md-select>
-                        </md-input-container>
+                            <md-input-container flex="50" md-no-float class="md-block">
+                                <md-select name="associateTitle" ng-model="associate.title" placeholder="Associate Title">
+                                    <md-option ng-repeat="title in titles" ng-value="title">
+                                        {{title}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
+
+                            <md-input-container flex="50" md-no-float class="md-block">
+                                <label>Project(s)</label>
+                                <md-select ng-model="associate.projects" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader" multiple="">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchTerm" ng-keydown="onSearchChange($event)" type="search" placeholder="Search for a project..." class="demo-header-searchbox md-text">
+                                    </md-select-header>
+                                    <md-optgroup>
+                                        <md-option ng-value="project" ng-repeat="project in projects |
+                                                                             filter:searchTerm">{{project.projectName}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <br/>
+
+                        <div layout="row" layout-align="center" flex>
+                            <md-button class="md-raised md-default" ng-click="clearAssignPrjsForm()">Clear</md-button>
+                            <md-button class="md-raised md-primary" ng-disabled="canShowSaveButtonForAssignPrjs(associate) == false" ng-click="assignProjects(associate)">Save</md-button>
+                        </div>
+                    </form>
+                </md-content>
+            </md-tab>
+
+            <!--Tab Two-->
+            <md-tab label="Update Associate">
+                <md-toolbar class="md-primary">
+                    <div class="md-toolbar-tools">
+                        <h2 class="md-flex">Update Associate Details</h2>
                     </div>
+                </md-toolbar>
+                <md-content class="md-no-momentum">
+                    <div layout="column" flex="">
+                        <form name="addAssociateForm">
+                            <div layout="row">
+                                <md-input-container flex="50" md-no-float class="md-block">
+                                    <input name="associateName" ng-model="associate.associateName" placeholder="Associate Name">
+                                </md-input-container>
 
-                    <br/>
+                                <md-input-container flex="5" md-no-float class="md-block">
+                                </md-input-container>
 
-                    <div layout="row" layout-align="center" flex>
-                        <md-button class="md-raised md-default" ng-click="clearAssociateForm()">Clear</md-button>
-                        <md-button class="md-raised md-primary" ng-disabled="canShowSaveButton(associate) == false" ng-click="saveAssociate(associate)">Save</md-button>
+                                <md-input-container flex="50" md-no-float class="md-block">
+                                    <input name="associateId" ng-model="associate.associateId" placeholder="Associate Id">
+                                </md-input-container>
+
+                                <md-input-container flex="5" md-no-float class="md-block">
+                                </md-input-container>
+
+                                <md-input-container flex="50" md-no-float class="md-block">
+                                    <input type="email" name="emailId" ng-model="associate.emailId" placeholder="Associate Email">
+                                </md-input-container>
+                            </div>
+
+                            <div layout="row">
+                                <md-input-container flex="50" md-no-float class="md-block">
+                                    <md-select name="associateTitle" ng-model="associate.title" placeholder="Associate Title">
+                                        <md-option ng-repeat="title in titles" ng-value="title">
+                                            {{title}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+
+                                <md-input-container flex="5" md-no-float class="md-block">
+                                </md-input-container>
+
+                                <md-input-container flex="50" md-no-float class="md-block">
+                                    <label>Project(s)</label>
+                                    <md-select ng-model="associate.projects" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader" multiple="">
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm" ng-keydown="onSearchChange($event)" type="search" placeholder="Search for a project..." class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-optgroup>
+                                            <md-option ng-value="project" ng-repeat="project in projects |
+                                                                                     filter:searchTerm">{{project.projectName}}</md-option>
+                                        </md-optgroup>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+
+                            <br/>
+
+                            <div layout="row" layout-align="center" flex>
+                                <md-button class="md-raised md-default" ng-click="clearAssociateForm()">Clear</md-button>
+                                <md-button class="md-raised md-primary" ng-disabled="canShowSaveButton(associate) == false" ng-click="saveAssociate(associate)">Save</md-button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-        </md-content>
+                </md-content>
+            </md-tab>
+
+            <!--Tab Three-->
+            <md-tab label="Reset Password">
+                <md-toolbar class="md-primary">
+                    <div class="md-toolbar-tools">
+                        <h2 class="md-flex">Reset Associate Password</h2>
+                    </div>
+                </md-toolbar>
+                <md-content class="md-no-momentum">
+                    <div layout="column" flex="">
+
+                    </div>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+
+
     </md-content>
 </div>

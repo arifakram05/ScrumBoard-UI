@@ -29,7 +29,7 @@
                             <label>Associate ID or Name</label>
                             <md-select ng-model="ctrl.selectedAsscForUpdate" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
                                 <md-select-header class="demo-select-header">
-                                    <input ng-model="searchTerm" ng-change="search(searchTerm)" type="search" placeholder="Search ID or Name of the assoicate..." class="demo-header-searchbox md-text">
+                                    <input ng-model="searchTerm" ng-change="search(searchTerm)" type="search" placeholder="Search ID or Name of the associate..." class="demo-header-searchbox md-text">
                                 </md-select-header>
                                 <md-optgroup>
                                     <md-option ng-value="assc" ng-repeat="assc in filteredAssociates | filter:searchTerm">{{assc.associateName}}</md-option>

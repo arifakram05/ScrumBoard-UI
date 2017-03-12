@@ -1,23 +1,101 @@
 <div ng-controller="loginCtrl">
     <div class="col-md-8 col-md-offset-2">
         <md-content class="md-padding">
-            <md-toolbar class="md-primary">
-                <div class="md-toolbar-tools">
-                    <h2 class="md-flex">Login</h2>
-                </div>
-            </md-toolbar>
+            <md-tabs md-dynamic-height md-border-bottom>
 
-            <form name="loginForm" role="form" layout="column" layout-padding ng-cloak>
-                <md-content class="md-no-momentum">
-                    <md-input-container md-no-float class="md-block">
-                        <input name="associateId" ng-model="associateId" type="text" placeholder="Id Number" required>
-                    </md-input-container>
-                </md-content>
+                <md-tab label="Login" md-on-select="showTab(1)" md-active="isFirstTabActive">
+                    <md-toolbar class="md-primary">
+                        <div class="md-toolbar-tools">
+                            <h2 class="md-flex">Login</h2>
+                        </div>
+                    </md-toolbar>
 
-                <div layout="row" layout-align="center" flex>
-                    <md-button class="md-raised md-default" ng-disabled="!associateId" ng-click="login(associateId)">Login</md-button>
-                </div>
-            </form>
+                    <form name="loginForm" role="form" layout-layout-padding ng-cloak>
+                        <div layout="row">
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Associate ID</label>
+                                <input name="associateId" ng-model="associate.associateId" type="text" required>
+                            </md-input-container>
+
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
+
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Password</label>
+                                <input name="userPassword" ng-model="associate.password" type="password" required>
+                            </md-input-container>
+
+                            <md-input-container flex="5" md-no-float class="md-block" ng-if="shouldUpdatePassword === true">
+                            </md-input-container>
+
+                            <md-input-container flex="" md-no-float class="md-block" ng-if="shouldUpdatePassword === true">
+                                <label>Confirm Password</label>
+                                <input name="confirmedPassword" ng-model="associate.confirmedPassword" type="password" required>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row" layout-align="center" flex>
+                            <md-button class="md-raised md-primary" ng-disabled="!loginForm.$valid" ng-if="shouldUpdatePassword === false" ng-click="login(associate)">Login</md-button>
+                            <md-button class="md-raised md-primary" ng-disabled="!loginForm.$valid" ng-if="shouldUpdatePassword" ng-click="updatePwd(associate)">Update</md-button>
+                            <md-button class="md-raised md-default" ng-click="clearLoginForm()">Clear</md-button>
+                        </div>
+                    </form>
+                </md-tab>
+
+                <md-tab label="Register" md-active="showTab(2)" md-active="isSecondTabActive">
+                    <md-toolbar class="md-primary">
+                        <div class="md-toolbar-tools">
+                            <h2 class="md-flex">Register</h2>
+                        </div>
+                    </md-toolbar>
+
+                    <form name="registerForm" role="form" layout-padding ng-cloak>
+                        <div layout="row">
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Associate ID</label>
+                                <input name="associateId" ng-model="associate.associateId" type="text" required>
+                            </md-input-container>
+
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
+
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Associate Name</label>
+                                <input name="associateName" ng-model="associate.associateName" type="text" required>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row">
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Password</label>
+                                <input name="password" ng-model="associate.password" type="password" required>
+                            </md-input-container>
+
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
+
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Confirm Password</label>
+                                <input name="confirmedPassword" ng-model="associate.confirmedPassword" type="password" required>
+                            </md-input-container>
+
+                            <md-input-container flex="5" md-no-float class="md-block">
+                            </md-input-container>
+
+                            <md-input-container flex="" md-no-float class="md-block">
+                                <label>Associate Email</label>
+                                <input name="email" ng-model="associate.emailId" type="email" required>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row" layout-align="center" flex>
+                            <md-button class="md-raised md-primary" ng-disabled="!registerForm.$valid" ng-click="register(associate)">Register</md-button>
+                            <md-button class="md-raised md-default" ng-click="clearRegisterForm()">Clear</md-button>
+                        </div>
+                    </form>
+                </md-tab>
+
+            </md-tabs>
         </md-content>
     </div>
 </div>
