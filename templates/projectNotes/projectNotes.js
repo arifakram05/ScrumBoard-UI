@@ -30,10 +30,10 @@ angular.module('scrumApp.projectNotes', ['ui.router'])
 
 .factory('projectNotesService', ['$http', '$q', function ($http, $q) {
 
-    var GET_ALL_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projectNotes?';
-    var SAVE_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projectNote';
-    var DELETE_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/delete/projectNote';
-    var EDIT_PROJECT_NOTES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/update/projectNote';
+    var GET_ALL_PROJECT_NOTES_URI = constants.url + 'projectNotes?';
+    var SAVE_PROJECT_NOTES_URI = constants.url + 'projectNote';
+    var DELETE_PROJECT_NOTES_URI = constants.url + 'delete/projectNote';
+    var EDIT_PROJECT_NOTES_URI = constants.url + 'update/projectNote';
     //test URL
     var TEST_SCRUM_URI = "templates/projectNotes/projectNotes.json";
 

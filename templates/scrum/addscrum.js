@@ -13,9 +13,9 @@ angular.module('scrumApp.addScrum', ['ui.router'])
 
 .factory('addScrumService', ['$http', '$q', function ($http, $q) {
 
-    var ADD_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/scrum/';
-    var UPDATE_SCRUM_URI = 'http://127.0.0.1:8080/ScrumBoard/services/updateScrum/';
-    var GET_RECENT_SCRUM_RECORD = 'http://127.0.0.1:8080/ScrumBoard/services/latestScrum?';
+    var ADD_SCRUM_URI = constants.url + 'scrum/';
+    var UPDATE_SCRUM_URI = constants.url + 'updateScrum/';
+    var GET_RECENT_SCRUM_RECORD = constants.url + 'latestScrum?';
 
     //define all factory methods
     var factory = {

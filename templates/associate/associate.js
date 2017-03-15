@@ -13,7 +13,7 @@ angular.module('scrumApp.associate', ['ui.router'])
 
 .factory('associateService', ['$http', '$q', function ($http, $q) {
 
-    var ADD_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/associate/';
+    var ADD_ASSOCIATE_URI = constants.url + 'associate/';
 
     //define all factory methods
     var factory = {

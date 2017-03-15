@@ -2,8 +2,8 @@ angular.module('scrumApp.shared', ['ui.router'])
 
 .service('SharedService', ['$state', 'growl', '$http', '$q', '$window', function ($state, growl, $http, $q, $window) {
 
-    var GET_ALL_PROJECTS_URI = 'http://127.0.0.1:8080/ScrumBoard/services/projects/';
-    var SEARCH_ASSOCIATES_URI = 'http://127.0.0.1:8080/ScrumBoard/services/searchAssociate?';
+    var GET_ALL_PROJECTS_URI = constants.url + 'projects/';
+    var SEARCH_ASSOCIATES_URI = constants.url + 'searchAssociate?';
 
     this.associateDetails = {};
     this.authToken = '';

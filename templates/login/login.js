@@ -11,9 +11,9 @@ angular.module('scrumApp.login', ['ui.router', 'scrumApp.shared'])
 
 .factory('loginService', ['$http', '$q', function ($http, $q) {
 
-    var LOGIN_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/login/';
-    var UPDATE_PASSWORD_URI = 'http://127.0.0.1:8080/ScrumBoard/services/update/password/';
-    var REGISTER_ASSOCIATE_URI = 'http://127.0.0.1:8080/ScrumBoard/services/register/';
+    var LOGIN_ASSOCIATE_URI = constants.url + 'login/';
+    var UPDATE_PASSWORD_URI = constants.url + 'update/password/';
+    var REGISTER_ASSOCIATE_URI = constants.url + 'register/';
 
     var factory = {
         loginAssociate: loginAssociate,
