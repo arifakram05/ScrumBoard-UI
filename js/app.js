@@ -7,6 +7,7 @@ var scrumApp = angular.module(
         'scrumApp.addScrum',
         'scrumApp.userDetails',
         'scrumApp.projectNotes',
+        'scrumApp.jira',
         'scrumApp.login',
         'scrumApp.logout',
         'scrumApp.shared'

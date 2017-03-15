@@ -1,0 +1,176 @@
+<div layout="column">
+    <md-content layout-padding>
+        <div layout="row">
+            <div class="col-md-10 col-md-offset-1" ng-controller="jiraCtrl as ctrl">
+                <md-content class="md-padding">
+
+                    <md-toolbar class="md-primary">
+                        <div class="md-toolbar-tools">
+                            <h2 class="md-flex">Search JIRA</h2>
+                        </div>
+                    </md-toolbar>
+
+                    <br/>
+
+                    <md-content class="md-no-momentum">
+                        <div layout="column" flex="">
+                            <form name="jiraForm" role="form" layout="column" layout-padding>
+
+                                <div layout="row">
+                                    <md-input-container flex="50" md-no-float class="md-block" ng-style="{'height':'20px'}">
+                                        <label>Associate ID</label>
+                                        <input name="associateId" ng-model="jira.associateId" placeholder="am046752" required>
+                                    </md-input-container>
+
+                                    <md-input-container flex="5"></md-input-container>
+
+                                    <md-input-container flex="50" ng-if="isJIRAStatusSel === undefined || isJIRAStatusSel === 'All' " md-no-float class="md-block" ng-style="{'height':'20px'}">
+                                        <label>Max Results</label>
+                                        <input name="maxResults" ng-model="jira.maxResults" placeholder="10">
+                                    </md-input-container>
+
+                                    <md-input-container flex="5"></md-input-container>
+
+                                    <md-input-container flex="50" md-no-float class="md-block" ng-style="{'height':'20px'}">
+                                        <md-select name="status" ng-model="jira.status" ng-change="jiraStatusChange(jira.status)" placeholder="Status">
+                                            <md-option value="{{jStatus}}" ng-repeat="jStatus in jiraStatuses">{{ jStatus }}</md-option>
+                                        </md-select>
+                                    </md-input-container>
+
+                                    <md-input-container flex="5"></md-input-container>
+
+                                    <md-input-container flex="50" md-no-float class="md-block" ng-style="{'height':'20px'}">
+                                        <label>JIRA URL</label>
+                                        <input name="jiraURL" ng-model="jiraURL" type="url" placeholder="Jira URL">
+                                    </md-input-container>
+
+                                    <md-input-container flex="5"></md-input-container>
+
+                                    <md-button class="md-raised md-primary" ng-disabled="canShowSubmitButton(jira) == false" ng-click="findJiras(jira)" ng-style="{'height':'20px'}">Submit</md-button>
+                                </div>
+
+                            </form>
+
+                            <br/>
+
+                            <table ng-if="jiraDetails" flex dir-paginate="jiraD in jiraDetails | itemsPerPage: 5" ng-style="{'width':'100%'}">
+                                <tr>
+                                    <td>
+                                        <md-content layout-padding="" ng-style="{'background-color':'#fff'}">
+                                            <md-toolbar ng-style="{'background-color': 'seagreen', 'height':'10px'}">
+                                                <div class="md-toolbar-tools" layout="row">
+                                                    <h4><a target="_blank" ng-href="{{jiraURL}}{{jiraD.key}}">{{jiraD.key}}</a></h4>
+                                                    <div layout="row" layout-align="end" flex>
+                                                        {{jiraD.status}}
+                                                    </div>
+                                                    <!--<div layout="row" layout-align="end" flex>
+                                                        <a class="btn btn-primary" aria-label="view details">
+                                                            <i class="fa fa-binoculars" aria-hidden="true"></i>
+                                                        </a>
+                                                    </div>-->
+                                                </div>
+                                            </md-toolbar>
+
+                                            <div class="panel-body">
+                                                <div layout="row">
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>JIRA Summary</label>
+                                                        <input name="summary" ng-readonly="true" ng-model="jiraD.summary">
+                                                    </md-input-container>
+                                                </div>
+
+                                                <div layout="row">
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>JIRA Description</label>
+                                                        <textarea name="description" ng-readonly="true" ng-model="jiraD.description" rows="1" max-rows="5"></textarea>
+                                                    </md-input-container>
+                                                </div>
+
+                                                <div layout="row">
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>JIRA</label>
+                                                        <input name="key" ng-readonly="true" ng-model="jiraD.key">
+                                                    </md-input-container>
+
+                                                    <md-input-container flex="5"></md-input-container>
+
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>Priority</label>
+                                                        <input name="priority" ng-readonly="true" ng-model="jiraD.priority">
+                                                    </md-input-container>
+
+                                                    <md-input-container flex="5"></md-input-container>
+
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>Status</label>
+                                                        <input name="status" ng-readonly="true" ng-model="jiraD.status">
+                                                    </md-input-container>
+                                                </div>
+
+                                                <div layout="row">
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>Project</label>
+                                                        <input name="project" ng-readonly="true" ng-model="jiraD.project">
+                                                    </md-input-container>
+
+                                                    <md-input-container flex="5"></md-input-container>
+
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>Creator</label>
+                                                        <input name="creator" ng-readonly="true" ng-model="jiraD.creator">
+                                                    </md-input-container>
+
+                                                    <md-input-container flex="5"></md-input-container>
+
+                                                    <md-input-container md-no-float class="md-block" flex>
+                                                        <label>Reporter</label>
+                                                        <input name="reporter" ng-readonly="true" ng-model="jiraD.reporter">
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+                                        </md-content>
+                                        <br/><br/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div>
+                                <div class="text-center" ng-if="jiraDetails">
+                                    <dir-pagination-controls max-size="5" boundary-links="true" direction-links="true" template-url="js/dirPagination.tpl.html"></dir-pagination-controls>
+                                </div>
+                            </div>
+
+                        </div>
+                    </md-content>
+
+                </md-content>
+            </div>
+        </div>
+    </md-content>
+
+    <!--Future : To display JIRA details in a modal-->
+    <!--<div class="modal fade" id="jira_modal" tabindex="-1" role="dialog" aria-labelledby="jira_modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <md-toolbar class="md-primary">
+                        <div class="md-toolbar-tools">
+                            <h2 class="md-flex">Jira details</h2>
+                        </div>
+                    </md-toolbar>
+
+                    <md-content class="md-no-momentum">
+                        <div layout="column" flex="">
+                            Modal
+                        </div>
+
+                        <div layout="row" layout-align="center" flex>
+                            <md-button class="md-raised md-default" data-dismiss="modal">close</md-button>
+                        </div>
+                    </md-content>
+                </div>
+            </div>
+        </div>
+    </div>-->
+</div>

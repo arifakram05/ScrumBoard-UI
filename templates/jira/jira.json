@@ -1,0 +1,26 @@
+[
+    {
+        "key":"COMPASSDEV-6916",
+        "priority":"Medium",
+        "description":"Currently, there is a rest-demographics rest API that needs to be redone in order to be compliant by alva and REST standards set forth by Cerner.\r\n\r\nhttps://github.cerner.com/NursingServices/rest-demographics\r\n\r\nThis will be complete when we can\r\n1) Deploy the WAR\r\n2) Successfully access each of the APIs\r\n3) Retrieve data from a domain through the API\r\n4) Understand the View SSN Priv",
+        "status":"Submitted",
+        "summary":"Rest Demographics Initial Investigation",
+        "project":"Compass",
+        "creator":"Pancoast,Pepper",
+        "reporter":"Pancoast,Pepper",
+        "issueType":null,
+        "dateCreated":"2017-02-22T08:00:53.000-0600"
+    },
+    {
+        "key":"COMPASSDEV-6724",
+        "priority":"Medium",
+        "description":"https://wiki.ucern.com/x/aS0GVg\r\n\r\nCreate a new design document and attach it to the following table",
+        "status":"In Review",
+        "summary":"Design/RFE",
+        "project":"Compass",
+        "creator":"Pancoast,Pepper",
+        "reporter":"Pancoast,Pepper",
+        "issueType":null,
+        "dateCreated":"2017-02-06T10:15:22.000-0600"
+    }
+]
